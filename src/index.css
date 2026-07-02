@@ -1,3 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-success: #4CAF50;
+  --color-warning: #FFB300;
+  --color-danger: #EF5350;
+  --color-accent-secondary: #8B5CF6;
+  --color-tooltip-bg: #FFFFFF;
+  --color-tooltip-border: #E5E7EB;
+  --color-tooltip-text: #1A1D23;
+  --color-category-other: #9E9E9E;
+}
+
+.dark {
+  --color-success: #66BB6A;
+  --color-warning: #FFA726;
+  --color-danger: #EF5350;
+  --color-accent-secondary: #A78BFA;
+  --color-tooltip-bg: #1A1D23;
+  --color-tooltip-border: #3D4048;
+  --color-tooltip-text: #FFFFFF;
+  --color-category-other: #6B7280;
+}
+
+.theme-transitioning *,
+.theme-transitioning *::before,
+.theme-transitioning *::after {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
