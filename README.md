@@ -1,70 +1,102 @@
-# Getting Started with Create React App
+# Ipon — Personal Finance Manager
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern, full-featured personal finance management application designed to help users track income, monitor expenses, set savings goals, and gain AI-powered financial insights. Built with a clean, intuitive interface and full dark mode support.
 
-## Available Scripts
+## Overview
 
-In the project directory, you can run:
+Ipon (from the Filipino word for "to save") is a comprehensive personal finance dashboard that brings together transaction tracking, budgeting, savings goals, and financial reporting into a single, cohesive experience. The app leverages AI to provide personalized spending advice and uses real-time data synchronization to keep everything up to date across sessions.
 
-### `npm start`
+## Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Dashboard
+- Real-time summary cards displaying net balance, income, expenses, savings rate, and transaction count
+- Live clock widget with current date display
+- Recent transactions overview with category icons and color-coded amounts
+- Spending by category breakdown with visual progress bars
+- AI-powered financial insights with caching for performance
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Transactions
+- Full CRUD support for income and expense transactions
+- Category-based organization with custom icons and colors
+- Search, filter by type, and filter by month
+- Pagination with "Load More" for large datasets
+- Edit and delete with confirmation dialogs
 
-### `npm test`
+### Budgets
+- Monthly budgets per expense category
+- Visual progress bars with color-coded status (green, yellow, red)
+- Real-time spending tracking against budget limits
+- Over-budget warnings with excess amount display
+- Edit and delete support
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Savings Goals
+- Create goals with target amounts, current savings, and optional deadlines
+- Visual progress tracking with completion indicators
+- Deposit functionality to incrementally add savings
+- Completed goals display with success styling and badge
+- Edit and delete support
 
-### `npm run build`
+### Reports
+- Monthly and custom date range views
+- Period comparison donut charts (today vs. yesterday, this week vs. last week, this month vs. last month)
+- Expense breakdown by category with percentage distribution
+- Daily activity feed showing income and expenses per day
+- Summary statistics including total income, expenses, and net savings
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Settings
+- Update display name with pre-filled current value
+- Change password with confirmation validation
+- Clean, centered form layout
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Authentication
+- Email and password registration with email confirmation
+- Secure login with error handling and user-friendly error messages
+- Session persistence across page reloads
+- Protected routing — unauthenticated users are redirected to the login screen
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Theme & Accessibility
+- Full dark and light mode with smooth transitions
+- Theme preference persisted in localStorage
+- ARIA labels on interactive elements
+- Focus trap and Escape key support in all modals
+- Screen reader-friendly toast notifications
+- Keyboard navigation support
 
-### `npm run eject`
+### Real-Time Sync
+- Supabase real-time subscriptions for transactions, budgets, and goals
+- Automatic data refresh when changes occur
+- Proper subscription cleanup on unmount
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Tech Stack
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 19 with functional components and hooks |
+| Styling | Tailwind CSS with custom dark mode theme |
+| Charts | Recharts for donut charts and data visualization |
+| Icons | Lucide React |
+| Backend | Supabase (PostgreSQL, Auth, Real-time) |
+| AI | Google Gemini API for personalized financial insights |
+| Build | Create React App |
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Architecture
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+The application follows a modular architecture with clear separation of concerns:
 
-## Learn More
+- **`src/hooks/`** — Custom hooks for authentication (`useAuth`), data management (`useData`), AI insights (`useAI`), theme (`useTheme`), and accessibility utilities (`useEscapeKey`, `useFocusTrap`)
+- **`src/components/`** — Feature-based components organized by domain (dashboard, reports, common)
+- **`src/services/`** — External service integrations (Supabase client, AI generation, centralized error reporting)
+- **`src/lib/`** — Pure utility functions for formatting and financial calculations
+- **`src/constants/`** — Shared constants including currency symbol and default categories
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## AI Integration
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+The app integrates Google's Gemini AI to generate contextual financial advice based on the user's current month spending patterns. Insights are cached locally with a 24-hour TTL to minimize API calls and reduce costs. The AI prompt sends only aggregated category totals — no individual transaction details — to protect user privacy.
 
-### Code Splitting
+## Security
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Supabase Row Level Security (RLS) ensures users can only access their own data
+- All database queries filter by `user_id` in addition to record ID
+- Environment variables for API keys are kept in `.env` and excluded from version control
+- Password changes require active session validation
+- Email confirmation required for new accounts
