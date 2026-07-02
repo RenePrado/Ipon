@@ -79,24 +79,4 @@ Ipon (from the Filipino word for "to save") is a comprehensive personal finance 
 | AI | Google Gemini API for personalized financial insights |
 | Build | Create React App |
 
-## Architecture
 
-The application follows a modular architecture with clear separation of concerns:
-
-- **`src/hooks/`** — Custom hooks for authentication (`useAuth`), data management (`useData`), AI insights (`useAI`), theme (`useTheme`), and accessibility utilities (`useEscapeKey`, `useFocusTrap`)
-- **`src/components/`** — Feature-based components organized by domain (dashboard, reports, common)
-- **`src/services/`** — External service integrations (Supabase client, AI generation, centralized error reporting)
-- **`src/lib/`** — Pure utility functions for formatting and financial calculations
-- **`src/constants/`** — Shared constants including currency symbol and default categories
-
-## AI Integration
-
-The app integrates Google's Gemini AI to generate contextual financial advice based on the user's current month spending patterns. Insights are cached locally with a 24-hour TTL to minimize API calls and reduce costs. The AI prompt sends only aggregated category totals — no individual transaction details — to protect user privacy.
-
-## Security
-
-- Supabase Row Level Security (RLS) ensures users can only access their own data
-- All database queries filter by `user_id` in addition to record ID
-- Environment variables for API keys are kept in `.env` and excluded from version control
-- Password changes require active session validation
-- Email confirmation required for new accounts
