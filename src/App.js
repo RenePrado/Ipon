@@ -13,8 +13,9 @@ import { ErrorBoundary } from "./components/common/ErrorBoundary";
 import { PageLoader } from "./components/common/PageLoader";
 import { useAuth } from "./hooks/useAuth";
 import { useData } from "./hooks/useData";
-import { useAI } from "./hooks/useAI";
+import { useChat } from "./hooks/useChat";
 import { useTheme } from "./hooks/useTheme";
+import { AIChatbot } from "./components/AIChatbot";
 import { supabase } from "./services/supabase";
 
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
@@ -24,7 +25,7 @@ export default function App() {
 
   const { session, loading: authLoading, signOut, signingOut } = useAuth((msg, type) => setToast({ msg, type }));
   const { transactions, budgets, goals, userProfile, loading: dataLoading, createTx, updateTx, deleteTx, createBudget, updateBudget, deleteBudget, createGoal, updateGoal, deleteGoal } = useData(session, (msg, type) => setToast({ msg, type }));
-  const { insight, insightError, insightStale, insightLoading, loadInsight } = useAI(transactions, DEFAULT_CATEGORIES);
+  const { messages, isTyping, isStreaming, sendMessage, clearChat } = useChat(transactions, budgets, goals, userProfile);
   const { theme, toggleTheme } = useTheme();
   const categories = DEFAULT_CATEGORIES;
 
@@ -151,7 +152,7 @@ export default function App() {
           <ErrorBoundary key={page}>
             {dataLoading ? <PageLoader /> : (
               <>
-                {page === "dashboard" && <Dashboard transactions={transactions} categories={categories} insight={insight} insightError={insightError} insightStale={insightStale} onLoadInsight={loadInsight} insightLoading={insightLoading} />}
+                {page === "dashboard" && <Dashboard transactions={transactions} categories={categories} />}
                 {page === "transactions" && <Transactions transactions={transactions} categories={categories} onCreate={createTx} onUpdate={updateTx} onDelete={deleteTx} />}
                 {page === "budgets" && <Budgets budgets={budgets} transactions={transactions} categories={categories} onCreate={createBudget} onUpdate={updateBudget} onDelete={deleteBudget} />}
                 {page === "goals" && <Goals goals={goals} onCreate={createGoal} onUpdate={updateGoal} onDelete={deleteGoal} />}
@@ -164,6 +165,8 @@ export default function App() {
       </div>
 
       {toast && <Toast msg={toast.msg} type={toast.type} onDone={() => setToast(null)} />}
+
+      <AIChatbot messages={messages} isTyping={isTyping} isStreaming={isStreaming} sendMessage={sendMessage} clearChat={clearChat} />
     </div>
   );
 }

@@ -71,6 +71,25 @@ module.exports = {
         'md': '0 4px 6px rgba(0, 0, 0, 0.1)',
         'lg': '0 10px 15px rgba(0, 0, 0, 0.1)',
       },
+      keyframes: {
+        pingRing: {
+          '0%': { transform: 'scale(1)', opacity: '0.5' },
+          '100%': { transform: 'scale(1.4)', opacity: '0' },
+        },
+        messageSlideIn: {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        blinkCursor: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0' },
+        },
+      },
+      animation: {
+        pingRing: 'pingRing 2s infinite',
+        messageSlideIn: 'messageSlideIn 0.25s ease-out',
+        blinkCursor: 'blinkCursor 0.5s infinite',
+      },
     },
   },
   plugins: [],

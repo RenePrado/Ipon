@@ -9,7 +9,7 @@ export async function generateAIInsight(transactions, categories) {
   }
 
   const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_KEY);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite" });
 
   const month = thisMonth();
   const monthTx = transactions.filter(t => t.date?.startsWith(month));

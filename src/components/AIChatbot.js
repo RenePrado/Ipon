@@ -1,0 +1,190 @@
+import { useState, useRef, useEffect, useCallback } from "react";
+import { MessageCircle, X, Send, Bot } from "lucide-react";
+
+function PisoAvatar({ size = "w-7 h-7", iconSize = 16 }) {
+  return (
+    <div className={`${size} rounded-full bg-accent-primary/15 text-accent-primary flex items-center justify-center flex-shrink-0`}>
+      <Bot size={iconSize} />
+    </div>
+  );
+}
+
+export function AIChatbot({ messages, isTyping, isStreaming, sendMessage, clearChat }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [input, setInput] = useState("");
+  const [hasWelcomed, setHasWelcomed] = useState(false);
+  const messagesRef = useRef(null);
+
+  useEffect(() => {
+    if (isOpen && !hasWelcomed && messages.length === 0) {
+      setHasWelcomed(true);
+    }
+  }, [isOpen, hasWelcomed, messages.length]);
+
+  useEffect(() => {
+    if (messagesRef.current) {
+      messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+    }
+  }, [messages, isTyping]);
+
+  const handleSend = () => {
+    if (!input.trim() || isTyping) return;
+    sendMessage(input);
+    setInput("");
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  const handleClose = useCallback(() => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsOpen(false);
+      setIsClosing(false);
+    }, 200);
+  }, []);
+
+  const toggleOpen = () => {
+    if (isOpen) {
+      handleClose();
+    } else {
+      setIsOpen(true);
+    }
+  };
+
+  const handleClear = () => {
+    clearChat();
+    setHasWelcomed(false);
+  };
+
+  return (
+    <>
+      {/* Floating Button */}
+      {!isOpen && (
+        <div className="fixed bottom-6 right-6 z-50 flex items-center justify-center">
+          <div className="absolute w-14 h-14 rounded-full bg-accent-primary animate-pingRing pointer-events-none" />
+          <button
+            onClick={toggleOpen}
+            aria-label="Open Piso chat"
+            className="relative w-14 h-14 rounded-full bg-accent-primary text-white shadow-lg hover:scale-110 transition-transform duration-200 flex items-center justify-center"
+          >
+            <MessageCircle size={24} />
+          </button>
+        </div>
+      )}
+
+      {/* Chat Panel */}
+      {isOpen && (
+        <div className={`fixed bottom-6 right-6 z-50 w-[360px] max-w-[calc(100vw-3rem)] origin-bottom-right ${isClosing ? "animate-[modalContentOut_0.2s_ease-in]" : "animate-[modalContentIn_0.2s_ease-out]"}`}>
+          <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg border border-border dark:border-dark-border shadow-lg flex flex-col h-[480px] max-h-[calc(100vh-6rem)]">
+            {/* Header */}
+            <div className="flex items-center justify-between p-3 border-b border-border dark:border-dark-border">
+              <div className="flex items-center gap-2">
+                <PisoAvatar size="w-8 h-8" iconSize={18} />
+                <div>
+                  <div className="text-text-primary dark:text-dark-text-primary font-semibold text-sm">Piso</div>
+                  <div className="text-text-tertiary dark:text-dark-text-tertiary text-[10px]">Online</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-1">
+                {messages.length > 0 && (
+                  <button
+                    onClick={handleClear}
+                    aria-label="Clear chat"
+                    className="p-1.5 rounded text-text-tertiary dark:text-dark-text-tertiary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 text-xs transition-colors"
+                  >
+                    Clear
+                  </button>
+                )}
+                <button
+                  onClick={toggleOpen}
+                  aria-label="Close chat"
+                  className="p-1.5 rounded text-text-secondary dark:text-dark-text-secondary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            </div>
+
+            {/* Messages */}
+            <div ref={messagesRef} className="flex-1 overflow-y-auto p-3 space-y-3">
+              {hasWelcomed && messages.length === 0 && (
+                <div className="flex gap-2 animate-messageSlideIn" style={{ animationDelay: "300ms", animationFillMode: "backwards" }}>
+                  <PisoAvatar />
+                  <div className="bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 rounded-lg rounded-tl-none p-2.5 text-sm text-text-secondary dark:text-dark-text-secondary max-w-[80%] leading-relaxed">
+                    Hi! I'm Piso, your personal finance assistant. Ask me anything about your finances, budgets, or savings goals.
+                  </div>
+                </div>
+              )}
+
+              {messages.map((msg, i) => {
+                const isLastAssistant = i === messages.length - 1 && msg.role === "assistant";
+                const showCursor = isLastAssistant && isStreaming;
+                return (
+                <div
+                  key={i}
+                  className={`flex gap-2 animate-messageSlideIn ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  {msg.role === "assistant" && <PisoAvatar />}
+                  <div
+                    className={`rounded-lg p-2.5 text-sm max-w-[80%] leading-relaxed ${
+                      msg.role === "user"
+                        ? "bg-accent-primary text-white rounded-tr-none"
+                        : "bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 text-text-secondary dark:text-dark-text-secondary rounded-tl-none"
+                    }`}
+                  >
+                    {msg.content}
+                    {showCursor && (
+                      <span className="inline-block w-[2px] h-[1em] bg-text-secondary dark:bg-dark-text-secondary ml-0.5 align-text-bottom animate-blinkCursor" />
+                    )}
+                  </div>
+                </div>
+                );
+              })}
+
+              {/* Typing Indicator - only during API wait, not during streaming */}
+              {isTyping && !isStreaming && (
+                <div className="flex gap-2 animate-messageSlideIn">
+                  <PisoAvatar />
+                  <div className="bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 rounded-lg rounded-tl-none p-3 flex items-center gap-1">
+                    <span className="w-2 h-2 rounded-full bg-text-tertiary dark:bg-dark-text-tertiary animate-bounce" style={{ animationDelay: "0ms" }} />
+                    <span className="w-2 h-2 rounded-full bg-text-tertiary dark:bg-dark-text-tertiary animate-bounce" style={{ animationDelay: "150ms" }} />
+                    <span className="w-2 h-2 rounded-full bg-text-tertiary dark:bg-dark-text-tertiary animate-bounce" style={{ animationDelay: "300ms" }} />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Input */}
+            <div className="p-3 border-t border-border dark:border-dark-border">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Ask about your finances..."
+                  disabled={isTyping}
+                  className="flex-1 px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg dark:bg-dark-bg text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-opacity-50 disabled:opacity-50"
+                />
+                <button
+                  onClick={handleSend}
+                  disabled={!input.trim() || isTyping}
+                  aria-label="Send message"
+                  className="px-3 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium border border-transparent transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center active:scale-95"
+                >
+                  <Send size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}

@@ -3,10 +3,9 @@ import { thisMonth } from "../lib/formatters";
 import { CategoryBreakdown } from "./reports/CategoryBreakdown";
 import { ClockWidget } from "./dashboard/ClockWidget";
 import { SummaryCards } from "./dashboard/SummaryCards";
-import { AIInsights } from "./AIInsights";
 import { RecentTransactions } from "./dashboard/RecentTransactions";
 
-export function Dashboard({ transactions, categories, insight, insightError, insightStale, onLoadInsight, insightLoading }) {
+export function Dashboard({ transactions, categories }) {
   const month = thisMonth();
   const { monthTx, income, expense, balance } = useMemo(() => {
     const monthTx = transactions.filter(t => t.date?.startsWith(month));
@@ -29,7 +28,6 @@ export function Dashboard({ transactions, categories, insight, insightError, ins
           <div className="mt-4">
             <CategoryBreakdown transactions={monthTx} categories={categories} limit={7} />
           </div>
-          <AIInsights insight={insight} insightError={insightError} insightStale={insightStale} onLoadInsight={onLoadInsight} insightLoading={insightLoading} />
         </div>
       </div>
     </div>
