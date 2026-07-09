@@ -25,7 +25,7 @@ export default function App() {
 
   const { session, loading: authLoading, signOut, signingOut } = useAuth((msg, type) => setToast({ msg, type }));
   const { transactions, budgets, goals, userProfile, loading: dataLoading, createTx, updateTx, deleteTx, createBudget, updateBudget, deleteBudget, createGoal, updateGoal, deleteGoal } = useData(session, (msg, type) => setToast({ msg, type }));
-  const { messages, isTyping, isStreaming, sendMessage, clearChat } = useChat(transactions, budgets, goals, userProfile);
+  const { messages, isTyping, isStreaming, showSuggestions, sendMessage, clearChat } = useChat(transactions, budgets, goals, userProfile);
   const { theme, toggleTheme } = useTheme();
   const categories = DEFAULT_CATEGORIES;
 
@@ -59,8 +59,8 @@ export default function App() {
   };
 
   return (
-    <div className="flex min-h-screen bg-bg dark:bg-dark-bg">
-      <aside className="w-56 bg-bg-elevated dark:bg-dark-bg-elevated border-r border-border dark:border-dark-border flex flex-col p-4 fixed h-full">
+    <div className="flex h-screen overflow-hidden bg-bg dark:bg-dark-bg">
+      <aside className="w-56 bg-bg-sidebar dark:bg-dark-bg-elevated border-r border-border dark:border-dark-border flex flex-col p-4 fixed h-full">
         <div className="text-2xl font-bold text-text-primary dark:text-dark-text-primary mb-6">Ipon</div>
 
         <div className="mb-4">
@@ -140,15 +140,15 @@ export default function App() {
         </div>
       </aside>
 
-      <div className="flex-1 ml-56">
-        <div className="p-6 border-b border-border dark:border-dark-border">
+      <div className="flex-1 ml-56 flex flex-col overflow-hidden">
+        <div className="p-6 border-b border-border dark:border-dark-border flex-shrink-0">
           <div>
             <div className="text-xl font-semibold text-text-primary dark:text-dark-text-primary">{pageTitles[page]?.title}</div>
             <div className="text-sm text-text-secondary dark:text-dark-text-secondary mt-0.5">{pageTitles[page]?.sub}</div>
           </div>
         </div>
 
-        <div className="p-6 animate-[fadeIn_0.3s_ease-out]" key={page}>
+        <div className="p-6 flex-1 overflow-y-auto animate-[fadeIn_0.3s_ease-out]" key={page}>
           <ErrorBoundary key={page}>
             {dataLoading ? <PageLoader /> : (
               <>
@@ -166,7 +166,7 @@ export default function App() {
 
       {toast && <Toast msg={toast.msg} type={toast.type} onDone={() => setToast(null)} />}
 
-      <AIChatbot messages={messages} isTyping={isTyping} isStreaming={isStreaming} sendMessage={sendMessage} clearChat={clearChat} />
+      <AIChatbot messages={messages} isTyping={isTyping} isStreaming={isStreaming} showSuggestions={showSuggestions} sendMessage={sendMessage} clearChat={clearChat} />
     </div>
   );
 }

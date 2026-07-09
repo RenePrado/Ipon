@@ -12,8 +12,6 @@ const reportError = (source, error, context = {}) => {
     ...(error ? { error } : {}),
   });
 
-  // Future: send to Sentry, LogRocket, etc.
-  // if (window.Sentry) window.Sentry.captureException(error, { contexts: { app: entry } });
 };
 
 export { reportError };

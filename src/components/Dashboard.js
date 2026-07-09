@@ -23,7 +23,7 @@ export function Dashboard({ transactions, categories }) {
       <div className="grid grid-cols-2 gap-3">
         <RecentTransactions transactions={transactions} categories={categories} />
 
-        <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-4 border border-border dark:border-dark-border">
+        <div className="bg-bg-elevated dark:bg-dark-bg-elevated shadow-card dark:shadow-dark-card rounded-lg p-4 border border-border dark:border-dark-border">
           <div className="text-text-primary dark:text-dark-text-primary font-semibold text-sm mb-3">Spending by Category</div>
           <div className="mt-4">
             <CategoryBreakdown transactions={monthTx} categories={categories} limit={7} />

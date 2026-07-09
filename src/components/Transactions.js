@@ -3,6 +3,7 @@ import { thisMonth, fmt } from "../lib/formatters";
 import { getCat } from "../lib/calculations";
 import { TxModal } from "./TxModal";
 import { ConfirmDialog } from "./common/ConfirmDialog";
+import { Pencil } from "lucide-react";
 
 export function Transactions({ transactions, categories, onCreate, onUpdate, onDelete }) {
   const [modal, setModal] = useState(null);
@@ -37,37 +38,46 @@ export function Transactions({ transactions, categories, onCreate, onUpdate, onD
 
   return (
     <div>
-      <div className="flex gap-3 mb-5 flex-wrap">
-        <input 
-          placeholder="Search..." 
-          value={filter.search} 
-          onChange={e => setFilter(f => ({ ...f, search: e.target.value }))} 
-          className="max-w-[200px] px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary" 
-        />
-        <input 
-          type="month" 
-          value={filter.month} 
-          onChange={e => setFilter(f => ({ ...f, month: e.target.value }))} 
-          className="max-w-[160px] px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary" 
-        />
-        <select 
-          value={filter.type} 
-          onChange={e => setFilter(f => ({ ...f, type: e.target.value }))} 
-          className="max-w-[140px] px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary"
-        >
-          <option value="all">All Types</option>
-          <option value="income">Income</option>
-          <option value="expense">Expense</option>
-        </select>
-        <button 
-          className="px-4 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium border border-transparent transition-colors" 
-          onClick={() => setModal("new")}
-        >
-          + Add
-        </button>
-      </div>
-
       <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg border border-border dark:border-dark-border p-4">
+        {/* Filter bar header */}
+        <div className="flex items-center justify-between gap-3 flex-wrap pb-3 mb-3 border-b border-border dark:border-dark-border">
+          <div className="flex gap-2 flex-wrap">
+            <input 
+              placeholder="Search..." 
+              value={filter.search} 
+              onChange={e => setFilter(f => ({ ...f, search: e.target.value }))} 
+              className="max-w-[200px] px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary" 
+            />
+            <input 
+              type="month" 
+              value={filter.month} 
+              onChange={e => setFilter(f => ({ ...f, month: e.target.value }))} 
+              className="max-w-[160px] px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary" 
+            />
+            <select 
+              value={filter.type} 
+              onChange={e => setFilter(f => ({ ...f, type: e.target.value }))} 
+              className="max-w-[140px] px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            >
+              <option value="all">All Types</option>
+              <option value="income">Income</option>
+              <option value="expense">Expense</option>
+            </select>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-text-secondary dark:text-dark-text-secondary whitespace-nowrap">
+              {filtered.length} {filtered.length === 1 ? "transaction" : "transactions"}
+            </span>
+            <button 
+              className="px-4 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium border border-transparent transition-colors" 
+              onClick={() => setModal("new")}
+            >
+              + Add
+            </button>
+          </div>
+        </div>
+
+        {/* Transaction list */}
         <div className="space-y-2">
           {filtered.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -111,9 +121,9 @@ export function Transactions({ transactions, categories, onCreate, onUpdate, onD
                     ? "bg-success/15 text-success" 
                     : "bg-danger/15 text-danger"
                 }`}>
-                  {tx.type}
+                  {tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}
                 </span>
-                <div className={`font-mono text-sm font-semibold text-right ${
+                <div className={`font-mono text-sm font-semibold text-right min-w-[80px] ${
                   tx.type === "income" 
                     ? "text-success" 
                     : "text-danger"
@@ -121,7 +131,14 @@ export function Transactions({ transactions, categories, onCreate, onUpdate, onD
                   {tx.type === "income" ? "+" : tx.type === "expense" ? "-" : "↔"}{fmt(tx.amount)}
                 </div>
                 <button 
-                  className="p-2.5 rounded hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 text-danger text-sm transition-colors"
+                  className="p-2 rounded-md text-text-tertiary dark:text-dark-text-tertiary hover:text-accent-primary dark:hover:text-accent-primary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors"
+                  onClick={e => { e.stopPropagation(); setModal(tx); }} 
+                  aria-label="Edit transaction"
+                >
+                  <Pencil size={15} />
+                </button>
+                <button 
+                  className="p-2 rounded-md text-text-tertiary dark:text-dark-text-tertiary hover:text-danger hover:bg-danger/10 transition-colors"
                   onClick={e => { e.stopPropagation(); setDeleteConfirm(tx); }} 
                   aria-label="Delete transaction"
                 >

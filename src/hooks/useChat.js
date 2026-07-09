@@ -1,22 +1,43 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { thisMonth, fmt } from "../lib/formatters";
+import { thisMonth, prevMonth, fmt } from "../lib/formatters";
 import { DEFAULT_CATEGORIES } from "../constants";
+import { getCat } from "../lib/calculations";
 import { reportError } from "../services/errorReporter";
 
 function buildSystemPrompt(transactions, budgets, goals, userProfile) {
   const month = thisMonth();
+  const prev = prevMonth();
   const monthTx = transactions.filter(t => t.date?.startsWith(month));
-  const income = monthTx.filter(t => t.type === "income").reduce((s, t) => s + Number(t.amount), 0);
-  const expense = monthTx.filter(t => t.type === "expense").reduce((s, t) => s + Number(t.amount), 0);
-  const balance = income - expense;
+  const prevTx = transactions.filter(t => t.date?.startsWith(prev));
 
-  const expenseByCategory = {};
-  monthTx.filter(t => t.type === "expense").forEach(t => {
-    const cat = DEFAULT_CATEGORIES.find(c => c.name === t.category);
-    const name = cat?.name || "Other";
-    expenseByCategory[name] = (expenseByCategory[name] || 0) + Number(t.amount);
-  });
+  const calcMonth = (txList) => {
+    const income = txList.filter(t => t.type === "income").reduce((s, t) => s + Number(t.amount), 0);
+    const expense = txList.filter(t => t.type === "expense").reduce((s, t) => s + Number(t.amount), 0);
+    const balance = income - expense;
+    const byCategory = {};
+    txList.filter(t => t.type === "expense").forEach(t => {
+      const cat = getCat(t.category, DEFAULT_CATEGORIES);
+      const name = cat?.name || "Other";
+      byCategory[name] = (byCategory[name] || 0) + Number(t.amount);
+    });
+    return { income, expense, balance, byCategory };
+  };
+
+  const cur = calcMonth(monthTx);
+  const pre = calcMonth(prevTx);
+
+  const allCategories = [...new Set([...Object.keys(cur.byCategory), ...Object.keys(pre.byCategory)])];
+  const changes = allCategories.map(cat => {
+    const curAmt = cur.byCategory[cat] || 0;
+    const prevAmt = pre.byCategory[cat] || 0;
+    if (prevAmt === 0 && curAmt > 0) return `- ${cat}: NEW this month (${fmt(curAmt)})`;
+    if (curAmt === 0 && prevAmt > 0) return `- ${cat}: ZERO this month (was ${fmt(prevAmt)})`;
+    const diff = curAmt - prevAmt;
+    const pct = prevAmt > 0 ? Math.round((diff / prevAmt) * 100) : 0;
+    const dir = diff > 0 ? "up" : "down";
+    return `- ${cat}: ${dir} ${fmt(Math.abs(diff))} (${pct}%)`;
+  }).join("\n");
 
   const budgetInfo = budgets.map(b => {
     const spent = monthTx.filter(t => t.type === "expense" && t.category === b.category).reduce((s, t) => s + Number(t.amount), 0);
@@ -29,18 +50,35 @@ function buildSystemPrompt(transactions, budgets, goals, userProfile) {
     return `- ${g.name}: Target ${fmt(g.target_amount)}, Saved ${fmt(g.current_amount)} (${pct}%)`;
   }).join("\n");
 
-  return `You are Ipon, a personal finance assistant for a Filipino user. Answer questions using only the provided financial data. Keep responses concise and conversational. Use Philippine Peso (₱) for all amounts.
+  return `You are Piso, a personal finance assistant for a Filipino user. Answer questions using only the provided financial data. Keep responses concise and conversational. Use Philippine Peso (₱) for all amounts.
+
+Format your responses using clean minimal markdown:
+- Use **bold** for important numbers and category names
+- Use bullet points (-) for lists
+- Do NOT use headers or hash symbols (#) — the chat bubble is small
+- Do NOT use triple backtick code blocks — this is a conversational assistant, not a coding tool
+- Keep responses short and scannable
 
 User: ${userProfile?.name || "User"}
-Month: ${month}
+Current Month: ${month}
+Previous Month: ${prev}
 
-Current Month Summary:
-- Total Income: ${fmt(income)}
-- Total Expenses: ${fmt(expense)}
-- Net Balance: ${fmt(balance)}
+Current Month:
+- Total Income: ${fmt(cur.income)}
+- Total Expenses: ${fmt(cur.expense)}
+- Net Balance: ${fmt(cur.balance)}
+Expense Breakdown:
+${Object.entries(cur.byCategory).map(([cat, amt]) => `- ${cat}: ${fmt(amt)}`).join("\n") || "- No expenses yet"}
 
-Expense Breakdown by Category:
-${Object.entries(expenseByCategory).map(([cat, amt]) => `- ${cat}: ${fmt(amt)}`).join("\n") || "- No expenses yet"}
+Previous Month:
+- Total Income: ${fmt(pre.income)}
+- Total Expenses: ${fmt(pre.expense)}
+- Net Balance: ${fmt(pre.balance)}
+Expense Breakdown:
+${Object.entries(pre.byCategory).map(([cat, amt]) => `- ${cat}: ${fmt(amt)}`).join("\n") || "- No expenses last month"}
+
+Month over Month Changes:
+${changes || "- No comparable data"}
 
 Active Budgets:
 ${budgetInfo || "- No budgets set"}
@@ -53,13 +91,21 @@ export function useChat(transactions, budgets, goals, userProfile) {
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(true);
   const requestIdRef = useRef(0);
   const streamIntervalRef = useRef(null);
+  const messagesRef = useRef(messages);
+
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
 
   const sendMessage = useCallback(async (text) => {
     if (!text.trim() || isTyping) return;
+    setShowSuggestions(false);
 
     const currentRequestId = ++requestIdRef.current;
+    const currentMessages = messagesRef.current;
 
     const userMsg = { role: "user", content: text };
     setMessages(prev => [...prev, userMsg]);
@@ -78,7 +124,7 @@ export function useChat(transactions, budgets, goals, userProfile) {
       const model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite" });
 
       const systemPrompt = buildSystemPrompt(transactions, budgets, goals, userProfile);
-      const history = messages.map(m => ({
+      const history = currentMessages.map(m => ({
         role: m.role === "user" ? "user" : "model",
         parts: [{ text: m.content }],
       }));
@@ -101,7 +147,7 @@ export function useChat(transactions, budgets, goals, userProfile) {
 
       const responseText = response.response.text();
 
-      const assistantIndex = messages.length + 1;
+      const assistantIndex = currentMessages.length + 1;
       setMessages(prev => {
         const updated = [...prev];
         updated[assistantIndex] = { role: "assistant", content: "" };
@@ -143,13 +189,13 @@ export function useChat(transactions, budgets, goals, userProfile) {
       reportError('chat', e, { operation: 'sendMessage' });
       const errorMsg = e.message === "Request timeout"
         ? "I took too long to respond. Please try again."
-        : `I'm having trouble responding right now. Please try again in a moment. [Debug: ${e.message}]`;
+        : `I'm having trouble responding right now. Please try again in a moment.`;
       setMessages(prev => [...prev, { role: "assistant", content: errorMsg }]);
     }
 
     setIsStreaming(false);
     setIsTyping(false);
-  }, [messages, isTyping, transactions, budgets, goals, userProfile]);
+  }, [isTyping, transactions, budgets, goals, userProfile]);
 
   const clearChat = useCallback(() => {
     requestIdRef.current++;
@@ -158,9 +204,10 @@ export function useChat(transactions, budgets, goals, userProfile) {
       streamIntervalRef.current = null;
     }
     setMessages([]);
+    setShowSuggestions(true);
     setIsTyping(false);
     setIsStreaming(false);
   }, []);
 
-  return { messages, isTyping, isStreaming, sendMessage, clearChat };
+  return { messages, isTyping, isStreaming, showSuggestions, sendMessage, clearChat };
 }

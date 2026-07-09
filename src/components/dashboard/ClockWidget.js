@@ -17,20 +17,15 @@ export function ClockWidget() {
   };
 
   return (
-    <div className="bg-bg-elevated dark:bg-dark-bg-elevated border border-border dark:border-dark-border rounded-lg p-4 mb-5 flex justify-between items-center shadow-md">
-      <div>
-        <div className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary dark:text-dark-text-tertiary mb-1">
-          Local Time
-        </div>
-        <div aria-label="Current local time" aria-live="off" className="text-2xl font-bold font-mono text-text-primary dark:text-dark-text-primary tracking-tight">
-          {formatTime(currentTime)}
-        </div>
+    <div className="bg-bg-elevated dark:bg-dark-bg-elevated border border-border dark:border-dark-border rounded-lg px-4 py-2.5 mb-5 flex items-center gap-4 shadow-card dark:shadow-dark-card">
+      <div aria-label="Current local time" aria-live="off" className="text-xl font-bold font-mono text-text-primary dark:text-dark-text-primary tracking-tight whitespace-nowrap">
+        {formatTime(currentTime)}
       </div>
-      <div className="text-right">
-        <div className="text-xs text-text-secondary dark:text-dark-text-secondary mb-0.5">
+      <div className="flex flex-col">
+        <div className="text-xs text-text-secondary dark:text-dark-text-secondary leading-tight">
           {formatDate(currentTime)}
         </div>
-        <div className="text-[10px] text-text-tertiary dark:text-dark-text-tertiary">
+        <div className="text-[10px] text-text-tertiary dark:text-dark-text-tertiary leading-tight">
           {Intl.DateTimeFormat().resolvedOptions().timeZone}
         </div>
       </div>

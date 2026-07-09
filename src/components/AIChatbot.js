@@ -1,5 +1,24 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { MessageCircle, X, Send, Bot } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+
+const INITIAL_CHIPS = [
+  "How am I doing this month?",
+  "Where am I overspending?",
+  "How can I save more?",
+];
+
+function Chip({ label, index, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className="self-start px-3 py-1.5 rounded-full border border-accent-primary/40 text-accent-primary text-xs font-medium bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 hover:bg-accent-primary hover:text-white hover:border-accent-primary transition-all duration-150 animate-messageSlideIn"
+      style={{ animationDelay: `${index * 50}ms`, animationFillMode: "backwards" }}
+    >
+      {label}
+    </button>
+  );
+}
 
 function PisoAvatar({ size = "w-7 h-7", iconSize = 16 }) {
   return (
@@ -9,7 +28,7 @@ function PisoAvatar({ size = "w-7 h-7", iconSize = 16 }) {
   );
 }
 
-export function AIChatbot({ messages, isTyping, isStreaming, sendMessage, clearChat }) {
+export function AIChatbot({ messages, isTyping, isStreaming, showSuggestions, sendMessage, clearChat }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [input, setInput] = useState("");
@@ -66,14 +85,14 @@ export function AIChatbot({ messages, isTyping, isStreaming, sendMessage, clearC
     <>
       {/* Floating Button */}
       {!isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center justify-center">
-          <div className="absolute w-14 h-14 rounded-full bg-accent-primary animate-pingRing pointer-events-none" />
+        <div className="fixed bottom-6 right-6 z-50 animate-bounceOnce">
           <button
             onClick={toggleOpen}
             aria-label="Open Piso chat"
-            className="relative w-14 h-14 rounded-full bg-accent-primary text-white shadow-lg hover:scale-110 transition-transform duration-200 flex items-center justify-center"
+            className="h-14 rounded-full bg-accent-primary text-white shadow-lg hover:scale-105 transition-transform duration-200 flex items-center justify-center gap-2 px-4 w-14 md:w-auto"
           >
-            <MessageCircle size={24} />
+            <MessageCircle size={24} className="flex-shrink-0" />
+            <span className="hidden md:inline text-sm font-semibold whitespace-nowrap">Ask Piso</span>
           </button>
         </div>
       )}
@@ -122,6 +141,14 @@ export function AIChatbot({ messages, isTyping, isStreaming, sendMessage, clearC
                 </div>
               )}
 
+              {showSuggestions && hasWelcomed && messages.length === 0 && (
+                <div className="flex flex-col gap-1.5 pl-9">
+                  {INITIAL_CHIPS.map((chip, i) => (
+                    <Chip key={chip} label={chip} index={i} onClick={() => sendMessage(chip)} />
+                  ))}
+                </div>
+              )}
+
               {messages.map((msg, i) => {
                 const isLastAssistant = i === messages.length - 1 && msg.role === "assistant";
                 const showCursor = isLastAssistant && isStreaming;
@@ -138,7 +165,23 @@ export function AIChatbot({ messages, isTyping, isStreaming, sendMessage, clearC
                         : "bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 text-text-secondary dark:text-dark-text-secondary rounded-tl-none"
                     }`}
                   >
-                    {msg.content}
+                    {msg.role === "assistant" ? (
+                      <div className="prose-chat">
+                        <ReactMarkdown
+                          components={{
+                            p: ({ children }) => <p className="mb-1 last:mb-0">{children}</p>,
+                            ul: ({ children }) => <ul className="list-disc pl-4 space-y-0.5 mb-1">{children}</ul>,
+                            ol: ({ children }) => <ol className="list-decimal pl-4 space-y-0.5 mb-1">{children}</ol>,
+                            li: ({ children }) => <li>{children}</li>,
+                            strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                          }}
+                        >
+                          {msg.content}
+                        </ReactMarkdown>
+                      </div>
+                    ) : (
+                      msg.content
+                    )}
                     {showCursor && (
                       <span className="inline-block w-[2px] h-[1em] bg-text-secondary dark:bg-dark-text-secondary ml-0.5 align-text-bottom animate-blinkCursor" />
                     )}

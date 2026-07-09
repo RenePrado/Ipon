@@ -9,28 +9,29 @@ module.exports = {
       colors: {
         // Light mode colors
         bg: {
-          DEFAULT: '#F5F7FA',
+          DEFAULT: '#F4F6F8',
           elevated: '#FFFFFF',
-          'elevated-2': '#F0F2F5',
+          'elevated-2': '#ECEEF1',
+          sidebar: '#ECEEF1',
         },
         text: {
-          primary: '#1A1D23',
+          primary: '#2D3340',
           secondary: '#6B7280',
           tertiary: '#9CA3AF',
         },
         accent: {
           primary: '#6366F1',
           secondary: '#8B5CF6',
-          tertiary: '#EC4899',
+          tertiary: '#7C3AED',
         },
         success: '#4CAF50',
         warning: '#FFB300',
         danger: '#EF5350',
         info: '#2196F3',
         border: {
-          DEFAULT: '#E5E7EB',
-          medium: '#D1D5DB',
-          strong: '#9CA3AF',
+          DEFAULT: '#E2E8F0',
+          medium: '#CBD5E1',
+          strong: '#94A3B8',
         },
         // Dark mode colors
         dark: {
@@ -67,15 +68,13 @@ module.exports = {
         'xl': '20px',
       },
       boxShadow: {
-        'sm': '0 1px 2px rgba(0, 0, 0, 0.05)',
-        'md': '0 4px 6px rgba(0, 0, 0, 0.1)',
-        'lg': '0 10px 15px rgba(0, 0, 0, 0.1)',
+        'sm': '0 1px 2px rgba(0, 0, 0, 0.04)',
+        'md': '0 2px 8px rgba(0, 0, 0, 0.06)',
+        'lg': '0 10px 15px rgba(0, 0, 0, 0.08)',
+        'card': '0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03)',
+        'dark-card': '0 2px 8px rgba(15, 17, 21, 0.5)',
       },
       keyframes: {
-        pingRing: {
-          '0%': { transform: 'scale(1)', opacity: '0.5' },
-          '100%': { transform: 'scale(1.4)', opacity: '0' },
-        },
         messageSlideIn: {
           '0%': { opacity: '0', transform: 'translateY(10px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
@@ -84,11 +83,18 @@ module.exports = {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0' },
         },
+        bounceOnce: {
+          '0%': { transform: 'translateY(0)' },
+          '30%': { transform: 'translateY(-12px)' },
+          '50%': { transform: 'translateY(0)' },
+          '70%': { transform: 'translateY(-6px)' },
+          '100%': { transform: 'translateY(0)' },
+        },
       },
       animation: {
-        pingRing: 'pingRing 2s infinite',
         messageSlideIn: 'messageSlideIn 0.25s ease-out',
         blinkCursor: 'blinkCursor 0.5s infinite',
+        bounceOnce: 'bounceOnce 0.8s ease-out 1',
       },
     },
   },
