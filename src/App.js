@@ -35,9 +35,8 @@ export default function App() {
 
   // ── Render
   if (!supabase) return (
-    <div className="flex items-center justify-center min-h-screen bg-bg dark:bg-dark-bg p-6">
+    <div className="flex items-center justify-center min-h-screen bg-bg dark:bg-dark-bg p-8">
       <div className="max-w-md text-center">
-        <div className="text-4xl mb-4">⚠</div>
         <div className="text-text-primary dark:text-dark-text-primary font-semibold text-lg mb-2">Configuration Error</div>
         <div className="text-text-secondary dark:text-dark-text-secondary text-sm">
           Supabase environment variables are missing. The app cannot start without a valid backend connection.
@@ -46,7 +45,7 @@ export default function App() {
       </div>
     </div>
   );
-  if (authLoading) return <div className="flex items-center justify-center min-h-screen bg-bg dark:bg-dark-bg"><div className="w-8 h-8 border-2 border-accent-primary border-t-transparent rounded-full animate-spin" /><span className="ml-3 text-text-primary dark:text-dark-text-primary">Loading...</span></div>;
+  if (authLoading) return <div className="flex items-center justify-center min-h-screen bg-bg dark:bg-dark-bg"><div className="w-6 h-6 border-2 border-accent-primary border-t-transparent rounded-full animate-spin" /></div>;
   if (!session) return <Auth onAuth={(s) => { if (s) window.location.reload(); }} />;
 
   const pageTitles = {
@@ -60,95 +59,93 @@ export default function App() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-bg dark:bg-dark-bg">
-      <aside className="w-56 bg-bg-sidebar dark:bg-dark-bg-elevated border-r border-border dark:border-dark-border flex flex-col p-4 fixed h-full">
-        <div className="text-2xl font-bold text-text-primary dark:text-dark-text-primary mb-6">Ipon</div>
+      <aside className="w-[220px] border-r border-border dark:border-dark-border flex flex-col px-3 py-6 fixed h-full">
+        <div className="text-base font-bold text-text-primary dark:text-dark-text-primary px-3 mb-8">Ipon</div>
 
-        <div className="mb-4">
-          <div className="text-xs font-semibold text-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wider mb-2">Overview</div>
-          <button className={`flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-            page === "dashboard" 
-              ? "bg-accent-primary text-white" 
-              : "text-text-secondary dark:text-dark-text-secondary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2"
+        <div className="mb-6">
+          <div className="text-[10px] font-medium text-text-tertiary dark:text-dark-text-tertiary uppercase tracking-widest px-3 mb-2">Overview</div>
+          <button className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm font-medium transition-colors border-l-2 ${
+            page === "dashboard"
+              ? "border-accent-primary text-accent-primary"
+              : "border-transparent text-text-secondary dark:text-dark-text-secondary hover:text-text-primary dark:hover:text-dark-text-primary"
           }`} onClick={() => setPage("dashboard")}
             aria-label="Navigate to Dashboard">
-            <LayoutDashboard size={18} />Dashboard
+            <LayoutDashboard size={16} />Dashboard
           </button>
         </div>
 
-        <div className="mb-4">
-          <div className="text-xs font-semibold text-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wider mb-2">Money</div>
-          <button className={`flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-            page === "transactions" 
-              ? "bg-accent-primary text-white" 
-              : "text-text-secondary dark:text-dark-text-secondary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2"
+        <div className="mb-6">
+          <div className="text-[10px] font-medium text-text-tertiary dark:text-dark-text-tertiary uppercase tracking-widest px-3 mb-2">Money</div>
+          <button className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm font-medium transition-colors border-l-2 ${
+            page === "transactions"
+              ? "border-accent-primary text-accent-primary"
+              : "border-transparent text-text-secondary dark:text-dark-text-secondary hover:text-text-primary dark:hover:text-dark-text-primary"
           }`} onClick={() => setPage("transactions")}
             aria-label="Navigate to Transactions">
-            <ArrowUpDown size={18} />Transactions
+            <ArrowUpDown size={16} />Transactions
           </button>
-          <button className={`flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-            page === "budgets" 
-              ? "bg-accent-primary text-white" 
-              : "text-text-secondary dark:text-dark-text-secondary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2"
+          <button className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm font-medium transition-colors border-l-2 ${
+            page === "budgets"
+              ? "border-accent-primary text-accent-primary"
+              : "border-transparent text-text-secondary dark:text-dark-text-secondary hover:text-text-primary dark:hover:text-dark-text-primary"
           }`} onClick={() => setPage("budgets")}
             aria-label="Navigate to Budgets">
-            <Wallet size={18} />Budgets
+            <Wallet size={16} />Budgets
           </button>
         </div>
 
-        <div className="mb-4">
-          <div className="text-xs font-semibold text-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wider mb-2">Grow</div>
-          <button className={`flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-            page === "goals" 
-              ? "bg-accent-primary text-white" 
-              : "text-text-secondary dark:text-dark-text-secondary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2"
+        <div className="mb-6">
+          <div className="text-[10px] font-medium text-text-tertiary dark:text-dark-text-tertiary uppercase tracking-widest px-3 mb-2">Grow</div>
+          <button className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm font-medium transition-colors border-l-2 ${
+            page === "goals"
+              ? "border-accent-primary text-accent-primary"
+              : "border-transparent text-text-secondary dark:text-dark-text-secondary hover:text-text-primary dark:hover:text-dark-text-primary"
           }`} onClick={() => setPage("goals")}
             aria-label="Navigate to Savings Goals">
-            <Target size={18} />Savings Goals
+            <Target size={16} />Savings Goals
           </button>
-          <button className={`flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-            page === "reports" 
-              ? "bg-accent-primary text-white" 
-              : "text-text-secondary dark:text-dark-text-secondary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2"
+          <button className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm font-medium transition-colors border-l-2 ${
+            page === "reports"
+              ? "border-accent-primary text-accent-primary"
+              : "border-transparent text-text-secondary dark:text-dark-text-secondary hover:text-text-primary dark:hover:text-dark-text-primary"
           }`} onClick={() => setPage("reports")}
             aria-label="Navigate to Reports">
-            <BarChart3 size={18} />Reports
+            <BarChart3 size={16} />Reports
           </button>
         </div>
 
-        <div className="mb-4">
-          <div className="text-xs font-semibold text-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wider mb-2">Account</div>
-          <button className={`flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-            page === "settings" 
-              ? "bg-accent-primary text-white" 
-              : "text-text-secondary dark:text-dark-text-secondary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2"
+        <div className="mb-6">
+          <div className="text-[10px] font-medium text-text-tertiary dark:text-dark-text-tertiary uppercase tracking-widest px-3 mb-2">Account</div>
+          <button className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm font-medium transition-colors border-l-2 ${
+            page === "settings"
+              ? "border-accent-primary text-accent-primary"
+              : "border-transparent text-text-secondary dark:text-dark-text-secondary hover:text-text-primary dark:hover:text-dark-text-primary"
           }`} onClick={() => setPage("settings")}
             aria-label="Navigate to Settings">
-            <SettingsIcon size={18} />Settings
+            <SettingsIcon size={16} />Settings
           </button>
         </div>
 
-        <div className="mt-auto">
-          <button className="flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm font-medium text-text-secondary dark:text-dark-text-secondary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors" onClick={toggleTheme}
+        <div className="mt-auto px-3 space-y-2">
+          <button className="flex items-center gap-2.5 text-sm text-text-secondary dark:text-dark-text-secondary hover:text-text-primary dark:hover:text-dark-text-primary transition-colors" onClick={toggleTheme}
             aria-label={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}>
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
             {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
           </button>
-          <button className="flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm font-medium text-text-secondary dark:text-dark-text-secondary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" onClick={signOut} disabled={signingOut}
+          <button className="flex items-center gap-2.5 text-sm text-text-secondary dark:text-dark-text-secondary hover:text-text-primary dark:hover:text-dark-text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed" onClick={signOut} disabled={signingOut}
             aria-label="Sign Out">
-            <LogOut size={18} />{signingOut ? "Signing out..." : "Sign Out"}
+            <LogOut size={16} />{signingOut ? "Signing out..." : "Sign Out"}
           </button>
         </div>
       </aside>
 
-      <div className="flex-1 ml-56 flex flex-col overflow-hidden">
-        <div className="p-6 border-b border-border dark:border-dark-border flex-shrink-0">
-          <div>
-            <div className="text-xl font-semibold text-text-primary dark:text-dark-text-primary">{pageTitles[page]?.title}</div>
-            <div className="text-sm text-text-secondary dark:text-dark-text-secondary mt-0.5">{pageTitles[page]?.sub}</div>
-          </div>
+      <div className="flex-1 ml-[220px] flex flex-col overflow-hidden">
+        <div className="px-8 py-6 border-b border-border dark:border-dark-border flex-shrink-0">
+          <div className="text-xl font-semibold text-text-primary dark:text-dark-text-primary">{pageTitles[page]?.title}</div>
+          <div className="text-sm text-text-secondary dark:text-dark-text-secondary mt-0.5">{pageTitles[page]?.sub}</div>
         </div>
 
-        <div className="p-6 flex-1 overflow-y-auto animate-[fadeIn_0.3s_ease-out]" key={page}>
+        <div className="p-8 flex-1 overflow-y-auto overflow-x-hidden animate-[fadeIn_0.3s_ease-out]" key={page}>
           <ErrorBoundary key={page}>
             {dataLoading ? <PageLoader /> : (
               <>

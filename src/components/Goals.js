@@ -3,7 +3,7 @@ import { fmt } from "../lib/formatters";
 import { ConfirmDialog } from "./common/ConfirmDialog";
 import { useEscapeKey } from "../hooks/useEscapeKey";
 import { useFocusTrap } from "../hooks/useFocusTrap";
-import { Target, CheckCircle2, Pencil, Plus } from "lucide-react";
+import { Pencil, Plus, X } from "lucide-react";
 
 export function Goals({ goals, onCreate, onUpdate, onDelete }) {
   const [modal, setModal] = useState(null);
@@ -73,26 +73,26 @@ export function Goals({ goals, onCreate, onUpdate, onDelete }) {
   return (
     <div>
       {/* Summary bar */}
-      <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg border border-border dark:border-dark-border p-4 mb-4 shadow-card dark:shadow-dark-card">
+      <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg border border-border dark:border-dark-border p-5 mb-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-6">
             <div>
-              <div className="text-text-tertiary dark:text-dark-text-tertiary text-xs mb-1">Total Goals</div>
-              <div className="font-mono text-lg font-bold text-text-primary dark:text-dark-text-primary">{totalGoals}</div>
+              <div className="text-text-secondary dark:text-dark-text-secondary text-[11px] font-medium uppercase tracking-wider mb-1">Total Goals</div>
+              <div className="text-xl font-semibold tabular-nums text-text-primary dark:text-dark-text-primary">{totalGoals}</div>
             </div>
             <div className="w-px h-10 bg-border dark:bg-dark-border" />
             <div>
-              <div className="text-text-tertiary dark:text-dark-text-tertiary text-xs mb-1">Total Saved</div>
-              <div className="font-mono text-lg font-bold text-accent-secondary">{fmt(totalSaved)}</div>
+              <div className="text-text-secondary dark:text-dark-text-secondary text-[11px] font-medium uppercase tracking-wider mb-1">Total Saved</div>
+              <div className="text-xl font-semibold tabular-nums text-accent-primary">{fmt(totalSaved)}</div>
             </div>
             <div className="w-px h-10 bg-border dark:bg-dark-border" />
             <div>
-              <div className="text-text-tertiary dark:text-dark-text-tertiary text-xs mb-1">Total Target</div>
-              <div className="font-mono text-lg font-bold text-text-primary dark:text-dark-text-primary">{fmt(totalTarget)}</div>
+              <div className="text-text-secondary dark:text-dark-text-secondary text-[11px] font-medium uppercase tracking-wider mb-1">Total Target</div>
+              <div className="text-xl font-semibold tabular-nums text-text-primary dark:text-dark-text-primary">{fmt(totalTarget)}</div>
             </div>
           </div>
           <button
-            className="px-4 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium border border-transparent transition-colors"
+            className="px-3 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium transition-colors"
             onClick={openNew}
           >
             + New Goal
@@ -102,93 +102,70 @@ export function Goals({ goals, onCreate, onUpdate, onDelete }) {
 
       {/* Goals grid */}
       {goals.length === 0 ? (
-        <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg border border-border dark:border-dark-border p-4">
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="w-14 h-14 rounded-full bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 flex items-center justify-center mb-4">
-              <Target size={28} className="text-text-tertiary dark:text-dark-text-tertiary" />
-            </div>
-            <div className="text-text-primary dark:text-dark-text-primary font-semibold text-base mb-1">No savings goals yet</div>
-            <div className="text-text-secondary dark:text-dark-text-secondary text-sm mb-4">Start saving towards something you care about.</div>
-            <button
-              className="px-4 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium border border-transparent transition-colors"
-              onClick={openNew}
-            >
-              Create your first goal
-            </button>
-          </div>
+        <div className="flex items-center justify-center py-16 text-center">
+          <div className="text-text-secondary dark:text-dark-text-secondary text-sm">No savings goals yet</div>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-3">
           {goals.map(g => {
             const pct = Number(g.target_amount) > 0 ? Math.min((Number(g.current_amount) / Number(g.target_amount)) * 100, 100) : 0;
             const done = pct >= 100;
             return (
               <div
                 key={g.id}
-                className={`rounded-lg p-4 border transition-colors ${
-                  done
-                    ? "bg-success/10 dark:bg-success/10 border-success/40 dark:border-success/40"
-                    : "bg-bg-elevated dark:bg-dark-bg-elevated border-border dark:border-dark-border"
-                }`}
-                style={done ? { borderLeft: '3px solid var(--color-success)' } : undefined}
+                className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 border border-border dark:border-dark-border"
               >
                 {/* Header */}
                 <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    {done && <CheckCircle2 size={15} className="text-success flex-shrink-0" />}
-                    <div className="text-text-primary dark:text-dark-text-primary font-semibold text-sm">{g.name}</div>
-                  </div>
+                  <div className="text-text-primary dark:text-dark-text-primary font-medium text-sm">{g.name}</div>
                   <div className="flex items-center gap-1">
                     <button
-                      className="p-1.5 rounded-md text-text-tertiary dark:text-dark-text-tertiary hover:text-accent-primary dark:hover:text-accent-primary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors"
+                      className="p-1.5 rounded text-text-tertiary dark:text-dark-text-tertiary hover:text-text-primary dark:hover:text-dark-text-primary transition-colors"
                       onClick={() => openEdit(g)}
                       aria-label="Edit goal"
                     >
                       <Pencil size={14} />
                     </button>
                     <button
-                      className="p-1.5 rounded-md text-text-tertiary dark:text-dark-text-tertiary hover:text-danger hover:bg-danger/10 transition-colors"
+                      className="p-1.5 rounded text-text-tertiary dark:text-dark-text-tertiary hover:text-danger transition-colors"
                       onClick={() => setDeleteConfirm(g)}
                       aria-label="Delete goal"
                     >
-                      ✕
+                      <X size={14} />
                     </button>
                   </div>
                 </div>
 
                 {/* Saved of target */}
-                <div className="flex items-baseline gap-1.5 mb-2">
-                  <span className="font-mono text-sm font-semibold text-accent-secondary">{fmt(g.current_amount)}</span>
+                <div className="flex items-baseline gap-1.5 mb-3">
+                  <span className="text-base font-semibold tabular-nums text-accent-primary">{fmt(g.current_amount)}</span>
                   <span className="text-xs text-text-secondary dark:text-dark-text-secondary">of {fmt(g.target_amount)}</span>
                 </div>
 
                 {/* Progress bar */}
-                <div className="bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 rounded-full h-2 overflow-hidden mb-3">
+                <div className="bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 rounded-full overflow-hidden mb-3" style={{ height: '4px' }}>
                   <div
-                    className="h-full rounded-full transition-all duration-300"
+                    className="h-full rounded-full"
                     style={{
                       width: `${pct}%`,
-                      background: done ? "var(--color-success)" : "var(--color-accent-secondary)"
+                      background: done ? "var(--color-success)" : "var(--color-accent)"
                     }}
                   />
                 </div>
 
                 {/* Bottom row: percentage + deposit */}
                 <div className="flex items-center justify-between">
-                  <span className={`font-mono text-xs font-semibold ${done ? "text-success" : "text-accent-secondary"}`}>
+                  <span className={`text-xs font-medium tabular-nums ${done ? "text-success" : "text-accent-primary"}`}>
                     {Math.round(pct)}%
                   </span>
                   {done ? (
-                    <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-success text-white">
-                      Completed
-                    </span>
+                    <span className="text-xs text-success font-medium">Completed</span>
                   ) : (
                     <button
-                      className="p-1.5 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white transition-colors"
+                      className="px-2.5 py-1 rounded-md border border-border dark:border-dark-border text-text-secondary dark:text-dark-text-secondary text-xs font-medium hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors flex items-center gap-1"
                       onClick={() => setDepositModal(g)}
-                      aria-label="Deposit"
                     >
-                      <Plus size={14} />
+                      <Plus size={12} /> Deposit
                     </button>
                   )}
                 </div>
@@ -199,9 +176,14 @@ export function Goals({ goals, onCreate, onUpdate, onDelete }) {
       )}
 
       {modal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={e => e.target === e.currentTarget && setModal(null)}>
-          <div ref={goalModalRef} className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-6 w-full max-w-md border border-border dark:border-dark-border shadow-lg" role="dialog" aria-modal="true" aria-labelledby="goal-modal-title">
-            <div id="goal-modal-title" className="text-text-primary dark:text-dark-text-primary font-semibold text-lg mb-4">{modal && modal !== true ? "Edit Savings Goal" : "New Savings Goal"}</div>
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onClick={e => e.target === e.currentTarget && setModal(null)}>
+          <div ref={goalModalRef} className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 w-full max-w-md border border-border dark:border-dark-border" role="dialog" aria-modal="true" aria-labelledby="goal-modal-title">
+            <div className="flex items-center justify-between mb-5">
+              <div id="goal-modal-title" className="text-text-primary dark:text-dark-text-primary font-semibold text-base">{modal && modal !== true ? "Edit Savings Goal" : "New Savings Goal"}</div>
+              <button onClick={() => setModal(null)} className="text-text-tertiary dark:text-dark-text-tertiary hover:text-text-primary dark:hover:text-dark-text-primary transition-colors" aria-label="Close">
+                <X size={18} />
+              </button>
+            </div>
             <div className="mb-4">
               <label className="block text-text-secondary dark:text-dark-text-secondary text-sm mb-1.5" htmlFor="goal-name">Goal Name</label>
               <input
@@ -209,7 +191,7 @@ export function Goals({ goals, onCreate, onUpdate, onDelete }) {
                 placeholder="e.g. MacBook, Vacation..."
                 value={form.name}
                 onChange={e => { setForm(f => ({ ...f, name: e.target.value })); setErrors(e => ({ ...e, name: "" })); }}
-                className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:outline-none focus:border-accent-primary transition-colors"
               />
               {errors.name && <div className="text-danger text-xs mt-1">{errors.name}</div>}
             </div>
@@ -222,7 +204,7 @@ export function Goals({ goals, onCreate, onUpdate, onDelete }) {
                   placeholder="0.00"
                   value={form.target_amount}
                   onChange={e => { setForm(f => ({ ...f, target_amount: e.target.value })); setErrors(e => ({ ...e, target_amount: "" })); }}
-                  className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                  className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:outline-none focus:border-accent-primary transition-colors"
                 />
                 {errors.target_amount && <div className="text-danger text-xs mt-1">{errors.target_amount}</div>}
               </div>
@@ -234,30 +216,30 @@ export function Goals({ goals, onCreate, onUpdate, onDelete }) {
                   placeholder="0.00"
                   value={form.current_amount}
                   onChange={e => { setForm(f => ({ ...f, current_amount: e.target.value })); setErrors(e => ({ ...e, current_amount: "" })); }}
-                  className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                  className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:outline-none focus:border-accent-primary transition-colors"
                 />
                 {errors.current_amount && <div className="text-danger text-xs mt-1">{errors.current_amount}</div>}
               </div>
             </div>
-            <div className="mb-4">
+            <div className="mb-5">
               <label className="block text-text-secondary dark:text-dark-text-secondary text-sm mb-1.5" htmlFor="goal-deadline">Deadline (optional)</label>
               <input
                 id="goal-deadline"
                 type="date"
                 value={form.deadline}
                 onChange={e => setForm(f => ({ ...f, deadline: e.target.value }))}
-                className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:border-accent-primary transition-colors"
               />
             </div>
             <div className="flex gap-3 justify-end">
               <button
-                className="px-4 py-2 rounded-md bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm font-medium border border-border dark:border-dark-border hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors"
+                className="px-3 py-2 rounded-md border border-border dark:border-dark-border text-text-primary dark:text-dark-text-primary text-sm font-medium hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors"
                 onClick={() => setModal(null)}
               >
                 Cancel
               </button>
               <button
-                className="px-4 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium border border-transparent transition-colors"
+                className="px-3 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium transition-colors"
                 onClick={save}
                 disabled={loading}
               >
@@ -269,10 +251,15 @@ export function Goals({ goals, onCreate, onUpdate, onDelete }) {
       )}
 
       {depositModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={e => e.target === e.currentTarget && setDepositModal(null)}>
-          <div ref={depositModalRef} className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-6 w-full max-w-md border border-border dark:border-dark-border shadow-lg" role="dialog" aria-modal="true" aria-labelledby="deposit-modal-title">
-            <div id="deposit-modal-title" className="text-text-primary dark:text-dark-text-primary font-semibold text-lg mb-4">Deposit to "{depositModal.name}"</div>
-            <div className="mb-4">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onClick={e => e.target === e.currentTarget && setDepositModal(null)}>
+          <div ref={depositModalRef} className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 w-full max-w-md border border-border dark:border-dark-border" role="dialog" aria-modal="true" aria-labelledby="deposit-modal-title">
+            <div className="flex items-center justify-between mb-5">
+              <div id="deposit-modal-title" className="text-text-primary dark:text-dark-text-primary font-semibold text-base">Deposit to "{depositModal.name}"</div>
+              <button onClick={() => setDepositModal(null)} className="text-text-tertiary dark:text-dark-text-tertiary hover:text-text-primary dark:hover:text-dark-text-primary transition-colors" aria-label="Close">
+                <X size={18} />
+              </button>
+            </div>
+            <div className="mb-5">
               <label className="block text-text-secondary dark:text-dark-text-secondary text-sm mb-1.5" htmlFor="deposit-amount">Amount (₱)</label>
               <input
                 id="deposit-amount"
@@ -281,18 +268,18 @@ export function Goals({ goals, onCreate, onUpdate, onDelete }) {
                 value={depositAmt}
                 onChange={e => setDepositAmt(e.target.value)}
                 autoFocus
-                className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:outline-none focus:border-accent-primary transition-colors"
               />
             </div>
             <div className="flex gap-3 justify-end">
               <button
-                className="px-4 py-2 rounded-md bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm font-medium border border-border dark:border-dark-border hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors"
+                className="px-3 py-2 rounded-md border border-border dark:border-dark-border text-text-primary dark:text-dark-text-primary text-sm font-medium hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors"
                 onClick={() => setDepositModal(null)}
               >
                 Cancel
               </button>
               <button
-                className="px-4 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium border border-transparent transition-colors"
+                className="px-3 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium transition-colors"
                 onClick={deposit}
                 disabled={loading}
               >

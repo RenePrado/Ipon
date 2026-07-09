@@ -32,27 +32,9 @@ export function CategoryBreakdown({ transactions, categories, limit = 7, onAddTr
 
     return (
 
-      <div className="flex flex-col items-center justify-center py-12 text-center">
+      <div className="flex items-center justify-center py-12 text-center">
 
-        <div className="text-4xl mb-3 text-text-tertiary dark:text-dark-text-tertiary">◎</div>
-
-        <div className="text-text-secondary dark:text-dark-text-secondary text-sm mb-4">No expenses in this period. Track your spending to see breakdown here.</div>
-
-        {onAddTransaction && (
-
-          <button 
-
-            className="px-4 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium border border-transparent transition-colors" 
-
-            onClick={onAddTransaction}
-
-          >
-
-            + Add a transaction
-
-          </button>
-
-        )}
+        <div className="text-text-secondary dark:text-dark-text-secondary text-sm">No expenses in this period</div>
 
       </div>
 
@@ -74,13 +56,13 @@ export function CategoryBreakdown({ transactions, categories, limit = 7, onAddTr
 
         return (
 
-          <div key={name} className="flex items-center gap-3 p-3 bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg mb-2 w-full">
+          <div key={name} className="flex items-center gap-3 py-2.5 border-b border-border dark:border-dark-border last:border-b-0 w-full overflow-hidden">
 
             <span
 
-              className="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0"
+              className="inline-block w-2 h-2 rounded-full flex-shrink-0"
 
-              style={{ backgroundColor: color, width: '10px', height: '10px' }}
+              style={{ backgroundColor: color }}
 
             />
 
@@ -90,11 +72,11 @@ export function CategoryBreakdown({ transactions, categories, limit = 7, onAddTr
 
             </span>
 
-            <div className="flex-1 bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 rounded-full h-2 overflow-hidden">
+            <div className="flex-1 bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 rounded-full overflow-hidden" style={{ height: '4px' }}>
 
               <div
 
-                className="h-full rounded-full transition-all duration-500 ease-out"
+                className="h-full rounded-full"
 
                 style={{ width: `${widthPercent}%`, backgroundColor: color }}
 
@@ -104,13 +86,13 @@ export function CategoryBreakdown({ transactions, categories, limit = 7, onAddTr
 
             <div className="flex items-center gap-2 flex-shrink-0 justify-end" style={{ minWidth: '100px' }}>
 
-              <span className="text-sm font-semibold text-text-primary dark:text-dark-text-primary whitespace-nowrap font-mono">
+              <span className="text-sm font-semibold text-text-primary dark:text-dark-text-primary whitespace-nowrap tabular-nums">
 
                 {fmt(amt)}
 
               </span>
 
-              <span className="text-[11px] px-2 py-0.5 rounded-full bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 text-text-secondary dark:text-dark-text-secondary whitespace-nowrap text-center" style={{ minWidth: '42px' }}>
+              <span className="text-[11px] px-2 py-0.5 rounded-full bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 text-text-secondary dark:text-dark-text-secondary whitespace-nowrap text-center tabular-nums" style={{ minWidth: '42px' }}>
 
                 {Math.round((amt / total) * 100)}%
 

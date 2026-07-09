@@ -97,18 +97,17 @@ const DonutTooltipContent = ({ entry }) => {
   return (
     <div
       style={{
-        background: "#141824",
-        border: "1px solid rgba(255,255,255,0.08)",
-        borderRadius: "12px",
-        padding: "10px 14px",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
+        background: "var(--color-tooltip-bg)",
+        border: "1px solid var(--color-tooltip-border)",
+        borderRadius: "8px",
+        padding: "8px 12px",
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
         <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: color, flexShrink: 0 }} />
-        <span style={{ color: "rgba(255,255,255,0.6)", fontSize: "12px", fontWeight: 500 }}>{entry.name}</span>
+        <span style={{ color: "var(--color-tooltip-text)", opacity: 0.6, fontSize: "12px", fontWeight: 500 }}>{entry.name}</span>
       </div>
-      <div style={{ color: "#FFFFFF", fontSize: "14px", fontWeight: 600, fontFamily: "monospace" }}>
+      <div style={{ color: "var(--color-tooltip-text)", fontSize: "14px", fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>
         {fmtCompact(entry.value)}
       </div>
     </div>
@@ -143,7 +142,7 @@ const DonutChart = ({ data, total, label, period }) => {
   if (total === 0) {
     return (
       <div className="text-center min-w-[160px]">
-        <div className="w-40 h-40 rounded-full bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 mx-auto flex items-center justify-center border-2 border-border dark:border-dark-border">
+        <div className="w-40 h-40 rounded-full bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 mx-auto flex items-center justify-center border border-border dark:border-dark-border">
           <div>
             <div className="text-xs text-text-tertiary dark:text-dark-text-tertiary uppercase">No data</div>
           </div>
@@ -159,7 +158,7 @@ const DonutChart = ({ data, total, label, period }) => {
 
   return (
     <div className="text-center min-w-[160px]">
-      <div className="relative w-40 h-40 mx-auto overflow-visible">
+      <div className="relative w-40 h-40 mx-auto overflow-hidden">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart key={period}>
             <Pie
@@ -193,7 +192,7 @@ const DonutChart = ({ data, total, label, period }) => {
 
         {/* Center label — always visible */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none z-10">
-          <div className="text-xl font-bold font-mono text-text-primary dark:text-dark-text-primary">{fmt(total)}</div>
+          <div className="text-xl font-semibold tabular-nums text-text-primary dark:text-dark-text-primary">{fmt(total)}</div>
           <div className="text-[9px] text-text-tertiary dark:text-dark-text-tertiary uppercase">Total</div>
         </div>
 
@@ -232,18 +231,18 @@ export function PeriodComparisonDonut({ transactions, categories }) {
   const allCategories = [...new Set([...Object.keys(currentData), ...Object.keys(previousData)])];
 
   return (
-    <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 border border-border dark:border-dark-border">
+    <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 border border-border dark:border-dark-border mb-6">
       <div className="flex justify-between items-center mb-5">
-        <div className="text-text-primary dark:text-dark-text-primary font-semibold text-sm">Period Comparison</div>
+        <div className="text-text-secondary dark:text-dark-text-secondary text-sm font-medium uppercase tracking-wider">Period Comparison</div>
         <div className="flex gap-2">
           {["day", "week", "month"].map((p) => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
-              className={`px-4 py-2.5 rounded-md text-xs font-medium transition-colors duration-300 ${
+              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
                 period === p
-                  ? "bg-accent-primary text-white border-none"
-                  : "bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 text-text-secondary dark:text-dark-text-secondary border border-border dark:border-dark-border"
+                  ? "bg-accent-primary text-white"
+                  : "border border-border dark:border-dark-border text-text-secondary dark:text-dark-text-secondary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2"
               }`}
             >
               {p.charAt(0).toUpperCase() + p.slice(1)}

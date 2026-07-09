@@ -262,7 +262,7 @@ export function Reports({ transactions, categories, onNavigate }) {
 
 
 
-            className="w-[180px] h-9 px-3 rounded-md border border-border dark:border-dark-border bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            className="w-[180px] h-9 px-3 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:border-accent-primary transition-colors"
 
 
 
@@ -294,7 +294,7 @@ export function Reports({ transactions, categories, onNavigate }) {
 
 
 
-              className="w-[150px] h-9 px-3 rounded-md border border-border dark:border-dark-border bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary"
+              className="w-[150px] h-9 px-3 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:border-accent-primary transition-colors"
 
 
 
@@ -322,7 +322,7 @@ export function Reports({ transactions, categories, onNavigate }) {
 
 
 
-              className="w-[150px] h-9 px-3 rounded-md border border-border dark:border-dark-border bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary"
+              className="w-[150px] h-9 px-3 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:border-accent-primary transition-colors"
 
 
 
@@ -394,15 +394,15 @@ export function Reports({ transactions, categories, onNavigate }) {
 
 
 
-      <div className="grid grid-cols-2 gap-3 mt-5">
+      <div className="grid grid-cols-2 gap-6 mt-6">
 
 
 
-        <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-4 border border-border dark:border-dark-border">
+        <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 border border-border dark:border-dark-border">
 
 
 
-          <div className="text-text-primary dark:text-dark-text-primary font-semibold text-sm mb-3">Expense Breakdown</div>
+          <div className="text-text-secondary dark:text-dark-text-secondary text-sm font-medium uppercase tracking-wider mb-4">Expense Breakdown</div>
 
 
 

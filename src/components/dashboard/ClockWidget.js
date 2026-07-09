@@ -17,8 +17,8 @@ export function ClockWidget() {
   };
 
   return (
-    <div className="bg-bg-elevated dark:bg-dark-bg-elevated border border-border dark:border-dark-border rounded-lg px-4 py-2.5 mb-5 flex items-center gap-4 shadow-card dark:shadow-dark-card">
-      <div aria-label="Current local time" aria-live="off" className="text-xl font-bold font-mono text-text-primary dark:text-dark-text-primary tracking-tight whitespace-nowrap">
+    <div className="bg-bg-elevated dark:bg-dark-bg-elevated border border-border dark:border-dark-border rounded-lg px-5 py-3 mb-6 flex items-center gap-4">
+      <div aria-label="Current local time" aria-live="off" className="text-lg font-semibold tabular-nums text-text-primary dark:text-dark-text-primary tracking-tight whitespace-nowrap">
         {formatTime(currentTime)}
       </div>
       <div className="flex flex-col">

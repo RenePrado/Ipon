@@ -6,73 +6,62 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        mono: ['Inter', 'monospace'],
+      },
       colors: {
-        // Light mode colors
+        // Light mode
         bg: {
-          DEFAULT: '#F4F6F8',
+          DEFAULT: '#FAFAFA',
           elevated: '#FFFFFF',
-          'elevated-2': '#ECEEF1',
-          sidebar: '#ECEEF1',
+          'elevated-2': '#F4F4F5',
         },
         text: {
-          primary: '#2D3340',
-          secondary: '#6B7280',
-          tertiary: '#9CA3AF',
+          primary: '#09090B',
+          secondary: '#71717A',
+          tertiary: '#A1A1AA',
         },
         accent: {
           primary: '#6366F1',
-          secondary: '#8B5CF6',
-          tertiary: '#7C3AED',
+          secondary: '#6366F1',
         },
-        success: '#4CAF50',
-        warning: '#FFB300',
-        danger: '#EF5350',
-        info: '#2196F3',
+        success: '#22C55E',
+        warning: '#F59E0B',
+        danger: '#EF4444',
         border: {
-          DEFAULT: '#E2E8F0',
-          medium: '#CBD5E1',
-          strong: '#94A3B8',
+          DEFAULT: '#E4E4E7',
         },
-        // Dark mode colors
+        // Dark mode
         dark: {
           bg: {
-            DEFAULT: '#0F1115',
-            elevated: '#1A1D23',
-            'elevated-2': '#252830',
+            DEFAULT: '#0A0A0A',
+            elevated: '#111111',
+            'elevated-2': '#1A1A1A',
           },
           text: {
             primary: '#FFFFFF',
-            secondary: '#A0A0A0',
-            tertiary: '#6B7280',
+            secondary: '#888888',
+            tertiary: '#444444',
           },
           accent: {
-            primary: '#818CF8',
-            secondary: '#A78BFA',
-            tertiary: '#F472B6',
+            primary: '#6366F1',
+            secondary: '#6366F1',
           },
-          success: '#66BB6A',
-          warning: '#FFA726',
-          danger: '#EF5350',
-          info: '#42A5F5',
+          success: '#22C55E',
+          warning: '#F59E0B',
+          danger: '#EF4444',
           border: {
-            DEFAULT: '#2D3038',
-            medium: '#3D4048',
-            strong: '#4D5058',
+            DEFAULT: '#222222',
           },
         },
       },
       borderRadius: {
-        'sm': '8px',
-        'md': '12px',
-        'lg': '16px',
-        'xl': '20px',
-      },
-      boxShadow: {
-        'sm': '0 1px 2px rgba(0, 0, 0, 0.04)',
-        'md': '0 2px 8px rgba(0, 0, 0, 0.06)',
-        'lg': '0 10px 15px rgba(0, 0, 0, 0.08)',
-        'card': '0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03)',
-        'dark-card': '0 2px 8px rgba(15, 17, 21, 0.5)',
+        'DEFAULT': '8px',
+        'sm': '6px',
+        'md': '8px',
+        'lg': '8px',
+        'xl': '12px',
       },
       keyframes: {
         messageSlideIn: {

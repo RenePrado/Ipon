@@ -34,63 +34,55 @@ export function RecentTransactions({ transactions, categories }) {
   };
 
   return (
-    <div className="bg-bg-elevated dark:bg-dark-bg-elevated shadow-card dark:shadow-dark-card rounded-lg p-4 border border-border dark:border-dark-border">
+    <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 border border-border dark:border-dark-border">
       <div className="flex justify-between items-center mb-4">
-        <div className="text-text-primary dark:text-dark-text-primary font-semibold text-sm">Recent Transactions</div>
+        <div className="text-text-secondary dark:text-dark-text-secondary text-sm font-medium uppercase tracking-wider">Recent Transactions</div>
       </div>
-      <div ref={listRef} className="space-y-2 max-h-[360px] overflow-y-auto">
+      <div ref={listRef} className="max-h-[360px] overflow-y-auto">
         {pageItems.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="text-4xl mb-3 text-text-tertiary dark:text-dark-text-tertiary">↕</div>
-            <div className="text-text-secondary dark:text-dark-text-secondary text-sm">No transactions yet. Add your first income or expense to get started.</div>
+          <div className="flex items-center justify-center py-12 text-center">
+            <div className="text-text-secondary dark:text-dark-text-secondary text-sm">No transactions this month</div>
           </div>
         )}
         {pageItems.map(tx => {
           const cat = getCat(tx.category, categories);
           return (
-            <div key={tx.id} className="flex items-center gap-3 p-3 rounded-md border border-border dark:border-dark-border hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2">
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center text-lg flex-shrink-0 ${
-                tx.type === "income" 
-                  ? "bg-success/15 text-success" 
-                  : "bg-danger/15 text-danger"
-              }`}>
-                {cat?.icon || "💸"}
+            <div key={tx.id} className="flex items-center justify-between py-3 border-b border-border dark:border-dark-border last:border-b-0">
+              <div className="min-w-0">
+                <div className="text-text-primary dark:text-dark-text-primary text-sm font-medium truncate">{tx.note || cat?.name || tx.type}</div>
+                <div className="text-text-secondary dark:text-dark-text-secondary text-xs mt-0.5">{cat?.name} · {tx.date}</div>
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-text-primary dark:text-dark-text-primary font-medium text-sm truncate">{tx.note || cat?.name || tx.type}</div>
-                <div className="text-text-secondary dark:text-dark-text-secondary text-xs">{cat?.name} · {tx.date}</div>
-              </div>
-              <div className={`font-mono text-sm font-semibold ${
-                tx.type === "income" 
-                  ? "text-success" 
+              <div className={`text-sm font-semibold tabular-nums whitespace-nowrap ml-4 ${
+                tx.type === "income"
+                  ? "text-success"
                   : "text-danger"
               }`}>
-                {tx.type === "income" ? "+" : tx.type === "expense" ? "-" : "↔"}{fmt(tx.amount)}
+                {tx.type === "income" ? "+" : tx.type === "expense" ? "-" : ""}{fmt(tx.amount)}
               </div>
             </div>
           );
         })}
       </div>
       {sorted.length > 0 && (
-        <div className="flex items-center justify-center gap-2 mt-3 pt-3 border-t border-border dark:border-dark-border">
+        <div className="flex items-center justify-center gap-2 mt-4 pt-4 border-t border-border dark:border-dark-border">
           <button
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
             aria-label="Previous page"
-            className="p-1.5 rounded-md text-text-secondary dark:text-dark-text-secondary hover:text-accent-primary dark:hover:text-accent-primary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-text-secondary dark:disabled:hover:text-dark-text-secondary"
+            className="p-1.5 rounded text-text-secondary dark:text-dark-text-secondary hover:text-text-primary dark:hover:text-dark-text-primary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
-            <ChevronLeft size={18} />
+            <ChevronLeft size={16} />
           </button>
-          <span className="text-xs text-text-tertiary dark:text-dark-text-tertiary whitespace-nowrap">
+          <span className="text-xs text-text-tertiary dark:text-dark-text-tertiary whitespace-nowrap tabular-nums">
             Page {currentPage} of {totalPages}
           </span>
           <button
             onClick={() => goToPage(currentPage + 1)}
             disabled={currentPage === totalPages}
             aria-label="Next page"
-            className="p-1.5 rounded-md text-text-secondary dark:text-dark-text-secondary hover:text-accent-primary dark:hover:text-accent-primary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-text-secondary dark:disabled:hover:text-dark-text-secondary"
+            className="p-1.5 rounded text-text-secondary dark:text-dark-text-secondary hover:text-text-primary dark:hover:text-dark-text-primary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
-            <ChevronRight size={18} />
+            <ChevronRight size={16} />
           </button>
         </div>
       )}

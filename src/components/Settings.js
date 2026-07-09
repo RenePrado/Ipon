@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../services/supabase";
+import { Lock, Eye, EyeOff } from "lucide-react";
 
 export function Settings({ session, userProfile, showToast }) {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: "", newPassword: "", confirmPassword: "" });
   const [errors, setErrors] = useState({});
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     if (userProfile?.name) {
@@ -63,12 +66,36 @@ export function Settings({ session, userProfile, showToast }) {
     setLoading(false);
   };
 
+  const initials = (userProfile?.name || "U")
+    .split(" ")
+    .map(w => w[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
+  const email = session?.user?.email || "";
+
   return (
-    <div>
-      <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-6 border border-border dark:border-dark-border max-w-[600px] mx-auto">
-        <div className="text-text-primary dark:text-dark-text-primary font-semibold text-base mb-4">Profile Settings</div>
-        
-        <div className="mb-4">
+    <div className="grid grid-cols-2 gap-6 items-start">
+      {/* Profile Settings */}
+      <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 border border-border dark:border-dark-border h-full flex flex-col">
+        <div className="text-text-secondary dark:text-dark-text-secondary text-sm font-medium uppercase tracking-wider mb-5">Profile Settings</div>
+
+        {/* User profile header */}
+        <div className="flex flex-col items-center mb-5">
+          <div
+            className="w-14 h-14 rounded-full flex items-center justify-center text-base font-semibold text-white mb-3"
+            style={{ background: "var(--color-accent)" }}
+          >
+            {initials}
+          </div>
+          <div className="text-text-primary dark:text-dark-text-primary font-medium text-sm">{userProfile?.name || "User"}</div>
+          <div className="text-text-secondary dark:text-dark-text-secondary text-xs mt-0.5">{email}</div>
+        </div>
+
+        <div className="border-t border-border dark:border-dark-border mb-5" />
+
+        <div className="mb-5">
           <label className="block text-text-secondary dark:text-dark-text-secondary text-sm mb-1.5" htmlFor="settings-name">Display Name</label>
           <input
             id="settings-name"
@@ -76,57 +103,96 @@ export function Settings({ session, userProfile, showToast }) {
             value={form.name}
             onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
             placeholder="Your name"
-            className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:outline-none focus:border-accent-primary transition-colors"
           />
           {errors.name && <div className="text-danger text-xs mt-1">{errors.name}</div>}
         </div>
 
-        <button 
-          className="px-4 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium border border-transparent transition-colors" 
-          onClick={updateProfile} 
-          disabled={loading}
-        >
-          {loading ? "Saving..." : "Save Profile"}
-        </button>
+        <div className="mb-5">
+          <label className="block text-text-secondary dark:text-dark-text-secondary text-sm mb-1.5" htmlFor="settings-email">Email</label>
+          <div className="relative">
+            <input
+              id="settings-email"
+              type="text"
+              value={email}
+              readOnly
+              className="w-full px-3 py-2 pr-10 rounded-md border border-border dark:border-dark-border bg-transparent text-text-secondary dark:text-dark-text-secondary text-sm cursor-not-allowed"
+            />
+            <Lock size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-tertiary dark:text-dark-text-tertiary" />
+          </div>
+          <div className="text-text-tertiary dark:text-dark-text-tertiary text-xs mt-1">Email cannot be changed here</div>
+        </div>
 
-        <div className="border-t border-border dark:border-dark-border my-6" />
+        <div className="mt-auto">
+          <button
+            className="w-full px-3 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium transition-colors disabled:opacity-50"
+            onClick={updateProfile}
+            disabled={loading}
+          >
+            {loading ? "Saving..." : "Save Profile"}
+          </button>
+        </div>
+      </div>
 
-        <div className="text-text-primary dark:text-dark-text-primary font-semibold text-base mb-2">Change Password</div>
-        <div className="text-text-tertiary dark:text-dark-text-tertiary text-xs mb-4">You must be signed in to change your password.</div>
+      {/* Change Password */}
+      <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 border border-border dark:border-dark-border h-full flex flex-col">
+        <div className="text-text-secondary dark:text-dark-text-secondary text-sm font-medium uppercase tracking-wider mb-5">Change Password</div>
 
-        <div className="mb-4">
+        <div className="mb-5">
           <label className="block text-text-secondary dark:text-dark-text-secondary text-sm mb-1.5" htmlFor="settings-new-password">New Password</label>
-          <input
-            id="settings-new-password"
-            type="password"
-            value={form.newPassword}
-            onChange={e => setForm(f => ({ ...f, newPassword: e.target.value }))}
-            placeholder="Enter new password (min 6 characters)"
-            className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary"
-          />
+          <div className="relative">
+            <input
+              id="settings-new-password"
+              type={showNewPassword ? "text" : "password"}
+              value={form.newPassword}
+              onChange={e => setForm(f => ({ ...f, newPassword: e.target.value }))}
+              placeholder="Enter new password (min 6 characters)"
+              className="w-full px-3 py-2 pr-10 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:outline-none focus:border-accent-primary transition-colors"
+            />
+            <button
+              type="button"
+              onClick={() => setShowNewPassword(s => !s)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-text-tertiary dark:text-dark-text-tertiary hover:text-text-primary dark:hover:text-dark-text-primary transition-colors"
+              aria-label={showNewPassword ? "Hide password" : "Show password"}
+            >
+              {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
           {errors.newPassword && <div className="text-danger text-xs mt-1">{errors.newPassword}</div>}
         </div>
 
-        <div className="mb-4">
+        <div className="mb-5">
           <label className="block text-text-secondary dark:text-dark-text-secondary text-sm mb-1.5" htmlFor="settings-confirm-password">Confirm New Password</label>
-          <input
-            id="settings-confirm-password"
-            type="password"
-            value={form.confirmPassword}
-            onChange={e => setForm(f => ({ ...f, confirmPassword: e.target.value }))}
-            placeholder="Re-enter new password"
-            className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary"
-          />
+          <div className="relative">
+            <input
+              id="settings-confirm-password"
+              type={showConfirmPassword ? "text" : "password"}
+              value={form.confirmPassword}
+              onChange={e => setForm(f => ({ ...f, confirmPassword: e.target.value }))}
+              placeholder="Re-enter new password"
+              className="w-full px-3 py-2 pr-10 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:outline-none focus:border-accent-primary transition-colors"
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(s => !s)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-text-tertiary dark:text-dark-text-tertiary hover:text-text-primary dark:hover:text-dark-text-primary transition-colors"
+              aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+            >
+              {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
           {errors.confirmPassword && <div className="text-danger text-xs mt-1">{errors.confirmPassword}</div>}
         </div>
 
-        <button 
-          className="px-4 py-2 rounded-md bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm font-medium border border-border dark:border-dark-border hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors duration-300" 
-          onClick={changePassword} 
-          disabled={loading}
-        >
-          {loading ? "Updating..." : "Update Password"}
-        </button>
+        <div className="mt-auto">
+          <button
+            className="w-full px-3 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium transition-colors disabled:opacity-50"
+            onClick={changePassword}
+            disabled={loading}
+          >
+            {loading ? "Updating..." : "Update Password"}
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -1,27 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --color-success: #4CAF50;
-  --color-warning: #FFB300;
-  --color-danger: #EF5350;
-  --color-accent-secondary: #8B5CF6;
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+  --color-accent: #6366F1;
+  --color-accent-secondary: #6366F1;
   --color-tooltip-bg: #FFFFFF;
-  --color-tooltip-border: #E2E8F0;
-  --color-tooltip-text: #2D3340;
-  --color-category-other: #94A3B8;
+  --color-tooltip-border: #E4E4E7;
+  --color-tooltip-text: #09090B;
+  --color-category-other: #A1A1AA;
 }
 
 .dark {
-  --color-success: #66BB6A;
-  --color-warning: #FFA726;
-  --color-danger: #EF5350;
-  --color-accent-secondary: #A78BFA;
-  --color-tooltip-bg: #1A1D23;
-  --color-tooltip-border: #3D4048;
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+  --color-accent: #6366F1;
+  --color-accent-secondary: #6366F1;
+  --color-tooltip-bg: #111111;
+  --color-tooltip-border: #222222;
   --color-tooltip-text: #FFFFFF;
-  --color-category-other: #6B7280;
+  --color-category-other: #444444;
 }
 
 .theme-transitioning *,
@@ -29,21 +33,23 @@
 .theme-transitioning *::after {
   transition-property: background-color, border-color, color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 300ms;
+  transition-duration: 200ms;
+}
+
+html, body {
+  overflow-x: hidden;
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: 'Inter', source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 @keyframes fadeIn {
@@ -64,4 +70,13 @@ code {
 @keyframes donutTooltipIn {
   0% { opacity: 0; transform: translateY(4px); }
   100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes authCardIn {
+  0% { opacity: 0; transform: scale(0.97); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }

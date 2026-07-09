@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { MessageCircle, X, Send, Bot } from "lucide-react";
+import { MessageCircle, X, Send } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 const INITIAL_CHIPS = [
@@ -12,7 +12,7 @@ function Chip({ label, index, onClick }) {
   return (
     <button
       onClick={onClick}
-      className="self-start px-3 py-1.5 rounded-full border border-accent-primary/40 text-accent-primary text-xs font-medium bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 hover:bg-accent-primary hover:text-white hover:border-accent-primary transition-all duration-150 animate-messageSlideIn"
+      className="self-start px-3 py-1.5 rounded-md border border-border dark:border-dark-border text-text-secondary dark:text-dark-text-secondary text-xs font-medium hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 hover:text-accent-primary transition-colors animate-messageSlideIn"
       style={{ animationDelay: `${index * 50}ms`, animationFillMode: "backwards" }}
     >
       {label}
@@ -20,10 +20,10 @@ function Chip({ label, index, onClick }) {
   );
 }
 
-function PisoAvatar({ size = "w-7 h-7", iconSize = 16 }) {
+function PisoAvatar({ size = "w-7 h-7" }) {
   return (
-    <div className={`${size} rounded-full bg-accent-primary/15 text-accent-primary flex items-center justify-center flex-shrink-0`}>
-      <Bot size={iconSize} />
+    <div className={`${size} rounded-md bg-accent-primary/10 text-accent-primary flex items-center justify-center flex-shrink-0 text-xs font-semibold`}>
+      P
     </div>
   );
 }
@@ -89,10 +89,9 @@ export function AIChatbot({ messages, isTyping, isStreaming, showSuggestions, se
           <button
             onClick={toggleOpen}
             aria-label="Open Piso chat"
-            className="h-14 rounded-full bg-accent-primary text-white shadow-lg hover:scale-105 transition-transform duration-200 flex items-center justify-center gap-2 px-4 w-14 md:w-auto"
+            className="w-10 h-10 rounded-md bg-bg-elevated dark:bg-dark-bg-elevated border border-border dark:border-dark-border text-accent-primary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors flex items-center justify-center"
           >
-            <MessageCircle size={24} className="flex-shrink-0" />
-            <span className="hidden md:inline text-sm font-semibold whitespace-nowrap">Ask Piso</span>
+            <MessageCircle size={18} />
           </button>
         </div>
       )}
@@ -100,13 +99,13 @@ export function AIChatbot({ messages, isTyping, isStreaming, showSuggestions, se
       {/* Chat Panel */}
       {isOpen && (
         <div className={`fixed bottom-6 right-6 z-50 w-[360px] max-w-[calc(100vw-3rem)] origin-bottom-right ${isClosing ? "animate-[modalContentOut_0.2s_ease-in]" : "animate-[modalContentIn_0.2s_ease-out]"}`}>
-          <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg border border-border dark:border-dark-border shadow-lg flex flex-col h-[480px] max-h-[calc(100vh-6rem)]">
+          <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg border border-border dark:border-dark-border flex flex-col h-[480px] max-h-[calc(100vh-6rem)]">
             {/* Header */}
             <div className="flex items-center justify-between p-3 border-b border-border dark:border-dark-border">
               <div className="flex items-center gap-2">
-                <PisoAvatar size="w-8 h-8" iconSize={18} />
+                <PisoAvatar size="w-8 h-8" />
                 <div>
-                  <div className="text-text-primary dark:text-dark-text-primary font-semibold text-sm">Piso</div>
+                  <div className="text-text-primary dark:text-dark-text-primary font-medium text-sm">Piso</div>
                   <div className="text-text-tertiary dark:text-dark-text-tertiary text-[10px]">Online</div>
                 </div>
               </div>
@@ -123,7 +122,7 @@ export function AIChatbot({ messages, isTyping, isStreaming, showSuggestions, se
                 <button
                   onClick={toggleOpen}
                   aria-label="Close chat"
-                  className="p-1.5 rounded text-text-secondary dark:text-dark-text-secondary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors"
+                  className="p-1.5 rounded text-text-tertiary dark:text-dark-text-tertiary hover:text-text-primary dark:hover:text-dark-text-primary transition-colors"
                 >
                   <X size={18} />
                 </button>
@@ -213,13 +212,13 @@ export function AIChatbot({ messages, isTyping, isStreaming, showSuggestions, se
                   onKeyDown={handleKeyDown}
                   placeholder="Ask about your finances..."
                   disabled={isTyping}
-                  className="flex-1 px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg dark:bg-dark-bg text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-opacity-50 disabled:opacity-50"
+                  className="flex-1 px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:outline-none focus:border-accent-primary transition-colors disabled:opacity-50"
                 />
                 <button
                   onClick={handleSend}
                   disabled={!input.trim() || isTyping}
                   aria-label="Send message"
-                  className="px-3 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium border border-transparent transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center active:scale-95"
+                  className="px-3 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                 >
                   <Send size={16} />
                 </button>

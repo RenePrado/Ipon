@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { supabase } from "../services/supabase";
+import { Eye, EyeOff } from "lucide-react";
 
 export function Auth({ onAuth }) {
   const [mode, setMode] = useState("login");
@@ -9,6 +10,7 @@ export function Auth({ onAuth }) {
   const [success, setSuccess] = useState("");
   const [registered, setRegistered] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
 
   const validate = () => {
     const errors = {};
@@ -70,16 +72,18 @@ export function Auth({ onAuth }) {
 
   if (registered) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-bg dark:bg-dark-bg p-4">
-        <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-8 w-full max-w-md border border-border dark:border-dark-border shadow-lg text-center">
-          <div className="text-4xl mb-4 text-success">✓</div>
-          <div className="text-3xl font-bold text-text-primary dark:text-dark-text-primary text-center mb-2">Ipon</div>
-          <div className="text-text-primary dark:text-dark-text-primary font-semibold text-lg mb-2">Check your email</div>
+      <div className="min-h-screen flex items-center justify-center p-4 bg-bg dark:bg-dark-bg">
+        <div
+          className="relative w-full max-w-[420px] rounded-lg p-5 text-center bg-bg-elevated dark:bg-dark-bg-elevated border border-border dark:border-dark-border"
+          style={{ animation: "authCardIn 0.4s ease-out" }}
+        >
+          <div className="text-xl font-bold text-text-primary dark:text-dark-text-primary mb-4">Ipon</div>
+          <div className="text-text-primary dark:text-dark-text-primary font-semibold text-base mb-2">Check your email</div>
           <div className="text-text-secondary dark:text-dark-text-secondary text-sm mb-6">
             We've sent a confirmation link to <span className="font-medium text-text-primary dark:text-dark-text-primary">{form.email}</span>. Please check your inbox and click the link to verify your account.
           </div>
-          <button 
-            className="w-full px-4 py-2 rounded-md bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm font-medium border border-border dark:border-dark-border hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors" 
+          <button
+            className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border text-text-primary dark:text-dark-text-primary text-sm font-medium hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors"
             onClick={() => { setRegistered(false); setMode("login"); setForm({ name: "", email: "", password: "" }); }}
           >
             Back to Sign In
@@ -90,66 +94,79 @@ export function Auth({ onAuth }) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg dark:bg-dark-bg p-4">
-      <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-8 w-full max-w-md border border-border dark:border-dark-border shadow-lg">
-        <div className="text-3xl font-bold text-text-primary dark:text-dark-text-primary text-center mb-2">Ipon</div>
-        <div className="text-text-secondary dark:text-dark-text-secondary text-center mb-6">{mode === "login" ? "Welcome back" : "Create your account"}</div>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-bg dark:bg-dark-bg">
+      <div
+        className="relative w-full max-w-[420px] rounded-lg p-5 bg-bg-elevated dark:bg-dark-bg-elevated border border-border dark:border-dark-border"
+        style={{ animation: "authCardIn 0.4s ease-out" }}
+      >
+        <div className="text-xl font-bold text-text-primary dark:text-dark-text-primary mb-1">Ipon</div>
+        <div className="text-text-secondary dark:text-dark-text-secondary text-sm mb-5">{mode === "login" ? "Welcome back" : "Create your account"}</div>
 
         {mode === "register" && (
-          <div className="mb-4">
+          <div className="mb-5">
             <label className="block text-text-secondary dark:text-dark-text-secondary text-sm mb-1.5" htmlFor="auth-name">Full Name</label>
-            <input 
-              id="auth-name" 
-              placeholder="Juan dela Cruz" 
-              value={form.name} 
+            <input
+              id="auth-name"
+              placeholder="Juan dela Cruz"
+              value={form.name}
               onChange={e => set("name", e.target.value)}
-              className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary"
+              className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:outline-none focus:border-accent-primary transition-colors"
             />
             {fieldErrors.name && <div className="text-danger text-xs mt-1">{fieldErrors.name}</div>}
           </div>
         )}
-        <div className="mb-4">
+        <div className="mb-5">
           <label className="block text-text-secondary dark:text-dark-text-secondary text-sm mb-1.5" htmlFor="auth-email">Email</label>
-          <input 
-            id="auth-email" 
-            type="email" 
-            placeholder="juan@email.com" 
-            value={form.email} 
+          <input
+            id="auth-email"
+            type="email"
+            placeholder="juan@email.com"
+            value={form.email}
             onChange={e => set("email", e.target.value)}
-            className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:outline-none focus:border-accent-primary transition-colors"
           />
             {fieldErrors.email && <div className="text-danger text-xs mt-1">{fieldErrors.email}</div>}
           </div>
-        <div className="mb-4">
+        <div className="mb-5">
           <label className="block text-text-secondary dark:text-dark-text-secondary text-sm mb-1.5" htmlFor="auth-password">Password</label>
-          <input 
-            id="auth-password" 
-            type="password" 
-            placeholder="••••••••" 
-            value={form.password} 
-            onChange={e => set("password", e.target.value)}
-            onKeyDown={e => e.key === "Enter" && submit()}
-            className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary"
-          />
+          <div className="relative">
+            <input
+              id="auth-password"
+              type={showPassword ? "text" : "password"}
+              placeholder="••••••••"
+              value={form.password}
+              onChange={e => set("password", e.target.value)}
+              onKeyDown={e => e.key === "Enter" && submit()}
+              className="w-full px-3 py-2 pr-10 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:outline-none focus:border-accent-primary transition-colors"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(s => !s)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-text-tertiary dark:text-dark-text-tertiary hover:text-text-primary dark:hover:text-dark-text-primary transition-colors"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
             {fieldErrors.password && <div className="text-danger text-xs mt-1">{fieldErrors.password}</div>}
           </div>
 
         {success && (
-          <div className="p-2.5 rounded-md text-xs mb-4 border bg-success/15 text-success border-success flex items-start gap-2">
+          <div className="p-2.5 rounded-md text-xs mb-5 border bg-success/15 text-success border-success flex items-start gap-2">
             <span className="flex-shrink-0 text-sm leading-tight">✓</span>
             <span>{success}</span>
           </div>
         )}
 
         {err && (
-          <div className="p-2.5 rounded-md text-xs mb-4 border bg-danger/15 text-danger border-danger">
+          <div className="p-2.5 rounded-md text-xs mb-5 border bg-danger/15 text-danger border-danger">
             {err}
           </div>
         )}
 
-        <button 
-          className="w-full px-4 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium border border-transparent transition-colors" 
-          onClick={submit} 
+        <button
+          className="w-full px-3 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium transition-colors disabled:opacity-50"
+          onClick={submit}
           disabled={loading}
         >
           {loading ? "Please wait..." : mode === "login" ? "Sign In" : "Create Account"}
@@ -157,9 +174,9 @@ export function Auth({ onAuth }) {
 
         <div className="text-center mt-4 text-text-secondary dark:text-dark-text-secondary text-sm">
           {mode === "login" ? (
-            <>No account? <button className="text-accent-primary hover:underline" aria-label="Switch to register" onClick={() => { setMode("register"); setErr(""); setSuccess(""); setFieldErrors({}); }}>Register</button></>
+            <>No account? <button className="text-accent-primary dark:text-dark-accent-primary hover:underline" aria-label="Switch to register" onClick={() => { setMode("register"); setErr(""); setSuccess(""); setFieldErrors({}); }}>Register</button></>
           ) : (
-            <>Have an account? <button className="text-accent-primary hover:underline" aria-label="Switch to login" onClick={() => { setMode("login"); setErr(""); setSuccess(""); setFieldErrors({}); }}>Sign In</button></>
+            <>Have an account? <button className="text-accent-primary dark:text-dark-accent-primary hover:underline" aria-label="Switch to login" onClick={() => { setMode("login"); setErr(""); setSuccess(""); setFieldErrors({}); }}>Sign In</button></>
           )}
         </div>
       </div>

@@ -3,7 +3,7 @@ import { thisMonth, fmt } from "../lib/formatters";
 import { getCat } from "../lib/calculations";
 import { TxModal } from "./TxModal";
 import { ConfirmDialog } from "./common/ConfirmDialog";
-import { Pencil } from "lucide-react";
+import { Pencil, X } from "lucide-react";
 
 export function Transactions({ transactions, categories, onCreate, onUpdate, onDelete }) {
   const [modal, setModal] = useState(null);
@@ -38,26 +38,26 @@ export function Transactions({ transactions, categories, onCreate, onUpdate, onD
 
   return (
     <div>
-      <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg border border-border dark:border-dark-border p-4">
+      <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg border border-border dark:border-dark-border p-5">
         {/* Filter bar header */}
-        <div className="flex items-center justify-between gap-3 flex-wrap pb-3 mb-3 border-b border-border dark:border-dark-border">
+        <div className="flex items-center justify-between gap-3 flex-wrap pb-4 mb-4 border-b border-border dark:border-dark-border">
           <div className="flex gap-2 flex-wrap">
-            <input 
-              placeholder="Search..." 
-              value={filter.search} 
-              onChange={e => setFilter(f => ({ ...f, search: e.target.value }))} 
-              className="max-w-[200px] px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary" 
+            <input
+              placeholder="Search..."
+              value={filter.search}
+              onChange={e => setFilter(f => ({ ...f, search: e.target.value }))}
+              className="max-w-[200px] px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:outline-none focus:border-accent-primary transition-colors"
             />
-            <input 
-              type="month" 
-              value={filter.month} 
-              onChange={e => setFilter(f => ({ ...f, month: e.target.value }))} 
-              className="max-w-[160px] px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary" 
+            <input
+              type="month"
+              value={filter.month}
+              onChange={e => setFilter(f => ({ ...f, month: e.target.value }))}
+              className="max-w-[160px] px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:border-accent-primary transition-colors"
             />
-            <select 
-              value={filter.type} 
-              onChange={e => setFilter(f => ({ ...f, type: e.target.value }))} 
-              className="max-w-[140px] px-3 py-2 rounded-md border border-border dark:border-dark-border bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            <select
+              value={filter.type}
+              onChange={e => setFilter(f => ({ ...f, type: e.target.value }))}
+              className="max-w-[140px] px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:border-accent-primary transition-colors"
             >
               <option value="all">All Types</option>
               <option value="income">Income</option>
@@ -65,11 +65,11 @@ export function Transactions({ transactions, categories, onCreate, onUpdate, onD
             </select>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-xs text-text-secondary dark:text-dark-text-secondary whitespace-nowrap">
+            <span className="text-xs text-text-secondary dark:text-dark-text-secondary whitespace-nowrap tabular-nums">
               {filtered.length} {filtered.length === 1 ? "transaction" : "transactions"}
             </span>
-            <button 
-              className="px-4 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium border border-transparent transition-colors" 
+            <button
+              className="px-3 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium transition-colors"
               onClick={() => setModal("new")}
             >
               + Add
@@ -78,79 +78,58 @@ export function Transactions({ transactions, categories, onCreate, onUpdate, onD
         </div>
 
         {/* Transaction list */}
-        <div className="space-y-2">
+        <div>
           {filtered.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="text-4xl mb-3 text-text-tertiary dark:text-dark-text-tertiary">↕</div>
-              <div className="text-text-secondary dark:text-dark-text-secondary text-sm mb-4">
-                {filter.search || filter.type !== "all" || filter.month !== thisMonth() 
-                  ? "No matching transactions found. Try adjusting your filters." 
-                  : "No transactions found. Add your first income or expense to get started."}
+            <div className="flex items-center justify-center py-12 text-center">
+              <div className="text-text-secondary dark:text-dark-text-secondary text-sm">
+                {filter.search || filter.type !== "all" || filter.month !== thisMonth()
+                  ? "No matching transactions found"
+                  : "No transactions this month"}
               </div>
-              {!filter.search && filter.type === "all" && filter.month === thisMonth() && (
-                <button 
-                  className="px-4 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium border border-transparent transition-colors" 
-                  onClick={() => setModal("new")}
-                >
-                  + Add your first transaction
-                </button>
-              )}
             </div>
           )}
           {visible.map(tx => {
             const cat = getCat(tx.category, categories);
             return (
-              <div 
-                key={tx.id} 
-                className="flex items-center gap-3 p-3 rounded-md border border-border dark:border-dark-border hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 cursor-pointer transition-colors duration-300"
+              <div
+                key={tx.id}
+                className="flex items-center justify-between py-3 border-b border-border dark:border-dark-border last:border-b-0 hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors cursor-pointer -mx-2 px-2 rounded group"
                 onClick={() => setModal(tx)}
               >
-                <div className={`w-9 h-9 rounded-full flex items-center justify-center text-lg flex-shrink-0 ${
-                  tx.type === "income" 
-                    ? "bg-success/15 text-success" 
-                    : "bg-danger/15 text-danger"
-                }`}>
-                  {cat?.icon || "💸"}
+                <div className="min-w-0 flex-1">
+                  <div className="text-text-primary dark:text-dark-text-primary text-sm font-medium truncate">{tx.note || cat?.name || tx.type}</div>
+                  <div className="text-text-secondary dark:text-dark-text-secondary text-xs mt-0.5">{cat?.name} · {tx.date}</div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-text-primary dark:text-dark-text-primary font-medium text-sm truncate">{tx.note || cat?.name || tx.type}</div>
-                  <div className="text-text-secondary dark:text-dark-text-secondary text-xs">{cat?.name} · {tx.date}</div>
-                </div>
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                  tx.type === "income" 
-                    ? "bg-success/15 text-success" 
-                    : "bg-danger/15 text-danger"
-                }`}>
-                  {tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}
-                </span>
-                <div className={`font-mono text-sm font-semibold text-right min-w-[80px] ${
-                  tx.type === "income" 
-                    ? "text-success" 
+                <div className={`text-sm font-semibold tabular-nums whitespace-nowrap mr-3 ${
+                  tx.type === "income"
+                    ? "text-success"
                     : "text-danger"
                 }`}>
-                  {tx.type === "income" ? "+" : tx.type === "expense" ? "-" : "↔"}{fmt(tx.amount)}
+                  {tx.type === "income" ? "+" : tx.type === "expense" ? "-" : ""}{fmt(tx.amount)}
                 </div>
-                <button 
-                  className="p-2 rounded-md text-text-tertiary dark:text-dark-text-tertiary hover:text-accent-primary dark:hover:text-accent-primary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors"
-                  onClick={e => { e.stopPropagation(); setModal(tx); }} 
-                  aria-label="Edit transaction"
-                >
-                  <Pencil size={15} />
-                </button>
-                <button 
-                  className="p-2 rounded-md text-text-tertiary dark:text-dark-text-tertiary hover:text-danger hover:bg-danger/10 transition-colors"
-                  onClick={e => { e.stopPropagation(); setDeleteConfirm(tx); }} 
-                  aria-label="Delete transaction"
-                >
-                  ✕
-                </button>
+                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    className="p-1.5 rounded text-text-tertiary dark:text-dark-text-tertiary hover:text-text-primary dark:hover:text-dark-text-primary transition-colors"
+                    onClick={e => { e.stopPropagation(); setModal(tx); }}
+                    aria-label="Edit transaction"
+                  >
+                    <Pencil size={14} />
+                  </button>
+                  <button
+                    className="p-1.5 rounded text-text-tertiary dark:text-dark-text-tertiary hover:text-danger transition-colors"
+                    onClick={e => { e.stopPropagation(); setDeleteConfirm(tx); }}
+                    aria-label="Delete transaction"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
               </div>
             );
           })}
           {filtered.length > visibleCount && (
-            <div className="flex justify-center pt-3">
-              <button 
-                className="px-4 py-2 rounded-md bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 text-text-primary dark:text-dark-text-primary text-sm font-medium border border-border dark:border-dark-border hover:bg-bg-elevated dark:hover:bg-dark-bg-elevated transition-colors" 
+            <div className="flex justify-center pt-4">
+              <button
+                className="px-3 py-2 rounded-md border border-border dark:border-dark-border text-text-primary dark:text-dark-text-primary text-sm font-medium hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors"
                 onClick={() => setVisibleCount(c => c + 20)}
               >
                 Load More ({filtered.length - visibleCount} remaining)
