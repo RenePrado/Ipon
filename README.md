@@ -1,82 +1,52 @@
 # Ipon — Personal Finance Manager
 
-A modern, full-featured personal finance management application designed to help users track income, monitor expenses, set savings goals, and gain AI-powered financial insights. Built with a clean, intuitive interface and full dark mode support.
+A personal finance app for tracking income, expenses, budgets, and savings goals — with an AI chat assistant built in.
 
 ## Overview
 
-Ipon (from the Filipino word for "to save") is a comprehensive personal finance dashboard that brings together transaction tracking, budgeting, savings goals, and financial reporting into a single, cohesive experience. The app leverages AI to provide personalized spending advice and uses real-time data synchronization to keep everything up to date across sessions.
+Ipon, a Filipino for to save, is a personal finance dashboard combining transaction tracking, budgeting, savings goals, and financial reporting in one clean interface with dark and light mode support.
 
 ## Features
 
 ### Dashboard
-- Real-time summary cards displaying net balance, income, expenses, savings rate, and transaction count
-- Live clock widget with current date display
-- Recent transactions overview with category icons and color-coded amounts
-- Spending by category breakdown with visual progress bars
-- AI-powered financial insights with caching for performance
+- Net Balance, Income, Expenses, Savings Rate, and Transaction count for the current month
+- Live clock with local time, date, and timezone
+- Recent transactions with pagination and category icons
+- Spending by category with progress bars and percentages
 
 ### Transactions
-- Full CRUD support for income and expense transactions
-- Category-based organization with custom icons and colors
-- Search, filter by type, and filter by month
-- Pagination with "Load More" for large datasets
-- Edit and delete with confirmation dialogs
+- Add, edit, and delete transactions with category, amount, date, and note
+- Search and filter by type and month
+- Load More pagination
 
 ### Budgets
-- Monthly budgets per expense category
-- Visual progress bars with color-coded status (green, yellow, red)
-- Real-time spending tracking against budget limits
-- Over-budget warnings with excess amount display
-- Edit and delete support
+- Monthly budgets per category
+- Color-coded progress: green, yellow, and red based on spending percentage
+- Total Budgeted, Total Spent, and Remaining summary
 
 ### Savings Goals
-- Create goals with target amounts, current savings, and optional deadlines
-- Visual progress tracking with completion indicators
-- Deposit functionality to incrementally add savings
-- Completed goals display with success styling and badge
-- Edit and delete support
+- Goals with target amount, current savings, and optional deadline
+- Deposit to add savings incrementally
+- Completed goals shown with success badge
 
 ### Reports
 - Monthly and custom date range views
-- Period comparison donut charts (today vs. yesterday, this week vs. last week, this month vs. last month)
-- Expense breakdown by category with percentage distribution
-- Daily activity feed showing income and expenses per day
-- Summary statistics including total income, expenses, and net savings
+- Period comparison donut charts with Day, Week, and Month toggle
+- Expense breakdown by category with percentages
+- Daily activity feed and summary statistics
 
-### Settings
-- Update display name with pre-filled current value
-- Change password with confirmation validation
-- Clean, centered form layout
-
-### Authentication
-- Email and password registration with email confirmation
-- Secure login with error handling and user-friendly error messages
-- Session persistence across page reloads
-- Protected routing — unauthenticated users are redirected to the login screen
-
-### Theme & Accessibility
-- Full dark and light mode with smooth transitions
-- Theme preference persisted in localStorage
-- ARIA labels on interactive elements
-- Focus trap and Escape key support in all modals
-- Screen reader-friendly toast notifications
-- Keyboard navigation support
-
-### Real-Time Sync
-- Supabase real-time subscriptions for transactions, budgets, and goals
-- Automatic data refresh when changes occur
-- Proper subscription cleanup on unmount
+### Piso — AI Chat Assistant
+- Floating chat widget on all pages
+- Answers questions about spending, budgets, and goals
+- Powered by Google Gemini API
 
 ## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | React 19 with functional components and hooks |
-| Styling | Tailwind CSS with custom dark mode theme |
-| Charts | Recharts for donut charts and data visualization |
+| Frontend | React 19 |
+| Styling | Tailwind CSS |
+| Charts | Recharts |
 | Icons | Lucide React |
-| Backend | Supabase (PostgreSQL, Auth, Real-time) |
-| AI | Google Gemini API for personalized financial insights |
-| Build | Create React App |
-
-
+| Backend | Supabase |
+| AI | Google Gemini API |
