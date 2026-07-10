@@ -9,68 +9,11 @@ const CX = CHART_SIZE / 2;
 const CY = CHART_SIZE / 2;
 const INNER_RADIUS = 50;
 const OUTER_RADIUS = 70;
-const TOOLTIP_OFFSET = 20;
-const TOOLTIP_W = 120;
-const TOOLTIP_H = 52;
 
 const convertToChartData = (data) => {
   return Object.entries(data)
     .map(([name, value]) => ({ name, value }))
     .sort((a, b) => b.value - a.value);
-};
-
-const computeSliceAngles = (data, total) => {
-  let currentAngle = 0;
-  return data.map((entry) => {
-    const sliceAngle = (entry.value / total) * 360;
-    const midAngle = currentAngle + sliceAngle / 2;
-    currentAngle += sliceAngle;
-    return { ...entry, midAngle };
-  });
-};
-
-const getTooltipPlacement = (midAngle) => {
-  const rad = (midAngle * Math.PI) / 180;
-  const distance = OUTER_RADIUS + TOOLTIP_OFFSET;
-  let x = CX + distance * Math.sin(rad);
-  let y = CY - distance * Math.cos(rad);
-
-  const angle = ((midAngle % 360) + 360) % 360;
-
-  let transform;
-  if (angle >= 315 || angle < 45) {
-    transform = "translate(-50%, -100%)";
-  } else if (angle >= 45 && angle < 135) {
-    transform = "translate(0, -50%)";
-  } else if (angle >= 135 && angle < 225) {
-    transform = "translate(-50%, 0)";
-  } else {
-    transform = "translate(-100%, -50%)";
-  }
-
-  // Collision detection: estimate tooltip bounds after transform
-  let estTop;
-  if (angle >= 315 || angle < 45) {
-    estTop = y - TOOLTIP_H;
-  } else if (angle >= 45 && angle < 135) {
-    estTop = y - TOOLTIP_H / 2;
-  } else if (angle >= 135 && angle < 225) {
-    estTop = y;
-  } else {
-    estTop = y - TOOLTIP_H / 2;
-  }
-
-  // Flip if tooltip would overflow container vertically
-  const margin = 2;
-  if (estTop < margin) {
-    y = CY + distance * Math.cos(rad);
-    transform = "translate(-50%, 0)";
-  } else if (estTop + TOOLTIP_H > CHART_SIZE - margin) {
-    y = CY - distance * Math.cos(rad);
-    transform = "translate(-50%, -100%)";
-  }
-
-  return { x, y, transform };
 };
 
 const renderActiveShape = (props) => {
@@ -118,6 +61,8 @@ const DonutChart = ({ data, total, label, period }) => {
   const [activeIndex, setActiveIndex] = useState(null);
   const hoverTimer = useRef(null);
   const currentActive = useRef(null);
+  const lastEntryRef = useRef(null);
+  const [tooltipShown, setTooltipShown] = useState(false);
 
   const handleMouseEnter = useCallback((_, index) => {
     if (hoverTimer.current) {
@@ -127,6 +72,7 @@ const DonutChart = ({ data, total, label, period }) => {
     if (index !== currentActive.current) {
       currentActive.current = index;
       setActiveIndex(index);
+      setTooltipShown(true);
     }
   }, []);
 
@@ -135,8 +81,9 @@ const DonutChart = ({ data, total, label, period }) => {
     hoverTimer.current = setTimeout(() => {
       currentActive.current = null;
       setActiveIndex(null);
+      setTooltipShown(false);
       hoverTimer.current = null;
-    }, 80);
+    }, 150);
   }, []);
 
   if (total === 0) {
@@ -152,13 +99,13 @@ const DonutChart = ({ data, total, label, period }) => {
     );
   }
 
-  const slicesWithAngles = computeSliceAngles(data, total);
-  const placement =
-    activeIndex !== null ? getTooltipPlacement(slicesWithAngles[activeIndex].midAngle) : null;
+  if (activeIndex !== null) {
+    lastEntryRef.current = data[activeIndex];
+  }
 
   return (
     <div className="text-center min-w-[160px]">
-      <div className="relative w-40 h-40 mx-auto overflow-hidden">
+      <div className="relative w-40 h-40 mx-auto">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart key={period}>
             <Pie
@@ -197,21 +144,19 @@ const DonutChart = ({ data, total, label, period }) => {
         </div>
 
         {/* Custom tooltip positioned outside the donut */}
-        {activeIndex !== null && data[activeIndex] && placement && (
+        {tooltipShown && lastEntryRef.current && (
           <div
-            className="absolute"
+            className="absolute transition-all duration-200 ease-out"
             style={{
-              left: `${placement.x}px`,
-              top: `${placement.y}px`,
-              transform: placement.transform,
+              left: `${CHART_SIZE + 10}px`,
+              top: `${CY}px`,
+              transform: "translate(0, -50%)",
               zIndex: 50,
               pointerEvents: "none",
-              willChange: "transform, opacity",
-              opacity: 1,
-              animation: "donutTooltipIn 200ms ease-out",
+              opacity: activeIndex !== null ? 1 : 0,
             }}
           >
-            <DonutTooltipContent entry={data[activeIndex]} />
+            <DonutTooltipContent entry={lastEntryRef.current} />
           </div>
         )}
       </div>

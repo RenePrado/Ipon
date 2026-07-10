@@ -3,6 +3,8 @@ import { today } from "../lib/formatters";
 import { useEscapeKey } from "../hooks/useEscapeKey";
 import { useFocusTrap } from "../hooks/useFocusTrap";
 import { X } from "lucide-react";
+import { CustomSelect } from "./common/CustomSelect";
+import { DatePicker } from "./common/DatePicker";
 
 export function TxModal({ tx, categories, onSave, onClose }) {
   const [form, setForm] = useState({
@@ -88,13 +90,10 @@ export function TxModal({ tx, categories, onSave, onClose }) {
             {errors.amount && <div className="text-danger text-xs mt-1">{errors.amount}</div>}
           </div>
           <div>
-            <label className="block text-text-secondary dark:text-dark-text-secondary text-sm mb-1.5" htmlFor="tx-date">Date</label>
-            <input
-              id="tx-date"
-              type="date"
+            <label className="block text-text-secondary dark:text-dark-text-secondary text-sm mb-1.5">Date</label>
+            <DatePicker
               value={form.date}
-              onChange={e => set("date", e.target.value)}
-              className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:border-accent-primary transition-colors"
+              onChange={v => set("date", v)}
             />
             {errors.date && <div className="text-danger text-xs mt-1">{errors.date}</div>}
           </div>
@@ -102,15 +101,12 @@ export function TxModal({ tx, categories, onSave, onClose }) {
 
         <div className="mb-4">
           <label className="block text-text-secondary dark:text-dark-text-secondary text-sm mb-1.5" htmlFor="tx-category">Category</label>
-          <select
-            id="tx-category"
+          <CustomSelect
             value={form.category}
-            onChange={e => set("category", e.target.value)}
-            className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:border-accent-primary transition-colors"
-          >
-            <option value="">Select category</option>
-            {cats.map(c => <option key={c.name} value={c.name}>{c.icon} {c.name}</option>)}
-          </select>
+            onChange={v => set("category", v)}
+            options={[{ value: "", label: "Select category" }, ...cats.map(c => ({ value: c.name, label: c.name }))]}
+            placeholder="Select category"
+          />
           {errors.category && <div className="text-danger text-xs mt-1">{errors.category}</div>}
         </div>
 

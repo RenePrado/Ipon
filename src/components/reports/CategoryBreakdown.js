@@ -6,7 +6,7 @@ import { getCat } from "../../lib/calculations";
 
 
 
-export function CategoryBreakdown({ transactions, categories, limit = 7, onAddTransaction }) {
+export function CategoryBreakdown({ transactions, categories, limit = 7 }) {
 
   const byCategory = {};
 
@@ -23,8 +23,6 @@ export function CategoryBreakdown({ transactions, categories, limit = 7, onAddTr
   const sorted = Object.entries(byCategory).sort((a, b) => b[1] - a[1]).slice(0, limit);
 
   const total = sorted.reduce((s, [, amt]) => s + amt, 0) || 1;
-
-  const max = sorted[0]?.[1] || 1;
 
 
 
@@ -52,7 +50,7 @@ export function CategoryBreakdown({ transactions, categories, limit = 7, onAddTr
 
         const color = CATEGORY_COLORS[name] || 'var(--color-category-other)';
 
-        const widthPercent = (amt / max) * 100;
+        const widthPercent = (amt / total) * 100;
 
         return (
 
@@ -72,7 +70,7 @@ export function CategoryBreakdown({ transactions, categories, limit = 7, onAddTr
 
             </span>
 
-            <div className="flex-1 bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 rounded-full overflow-hidden" style={{ height: '4px' }}>
+            <div className="flex-1 bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 rounded-full overflow-hidden" style={{ height: '8px' }}>
 
               <div
 

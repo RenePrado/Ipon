@@ -5,6 +5,8 @@ import { ConfirmDialog } from "./common/ConfirmDialog";
 import { useEscapeKey } from "../hooks/useEscapeKey";
 import { useFocusTrap } from "../hooks/useFocusTrap";
 import { Pencil, X } from "lucide-react";
+import { CustomSelect } from "./common/CustomSelect";
+import { MonthPicker } from "./common/MonthPicker";
 
 export function Budgets({ budgets, transactions, categories, onCreate, onUpdate, onDelete }) {
   const [modal, setModal] = useState(null);
@@ -134,7 +136,7 @@ export function Budgets({ budgets, transactions, categories, onCreate, onUpdate,
                 </div>
 
                 {/* Progress bar */}
-                <div className="bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 rounded-full overflow-hidden mb-3" style={{ height: '4px' }}>
+                <div className="bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 rounded-full overflow-hidden mb-3" style={{ height: '8px' }}>
                   <div
                     className="h-full rounded-full"
                     style={{
@@ -170,15 +172,12 @@ export function Budgets({ budgets, transactions, categories, onCreate, onUpdate,
             </div>
             <div className="mb-4">
               <label className="block text-text-secondary dark:text-dark-text-secondary text-sm mb-1.5" htmlFor="budget-category">Category</label>
-              <select
-                id="budget-category"
+              <CustomSelect
                 value={form.category}
-                onChange={e => { setForm(f => ({ ...f, category: e.target.value })); setErrors(e => ({ ...e, category: "" })); }}
-                className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:border-accent-primary transition-colors"
-              >
-                <option value="">Select category</option>
-                {expenseCats.map(c => <option key={c.name} value={c.name}>{c.icon} {c.name}</option>)}
-              </select>
+                onChange={v => { setForm(f => ({ ...f, category: v })); setErrors(e => ({ ...e, category: "" })); }}
+                options={[{ value: "", label: "Select category" }, ...expenseCats.map(c => ({ value: c.name, label: c.name }))]}
+                placeholder="Select category"
+              />
               {errors.category && <div className="text-danger text-xs mt-1">{errors.category}</div>}
             </div>
             <div className="grid grid-cols-2 gap-3 mb-5">
@@ -195,13 +194,10 @@ export function Budgets({ budgets, transactions, categories, onCreate, onUpdate,
                 {errors.limit_amount && <div className="text-danger text-xs mt-1">{errors.limit_amount}</div>}
               </div>
               <div>
-                <label className="block text-text-secondary dark:text-dark-text-secondary text-sm mb-1.5" htmlFor="budget-month">Month</label>
-                <input
-                  id="budget-month"
-                  type="month"
+                <label className="block text-text-secondary dark:text-dark-text-secondary text-sm mb-1.5">Month</label>
+                <MonthPicker
                   value={form.month}
-                  onChange={e => setForm(f => ({ ...f, month: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:border-accent-primary transition-colors"
+                  onChange={v => setForm(f => ({ ...f, month: v }))}
                 />
               </div>
             </div>

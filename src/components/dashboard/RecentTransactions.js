@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { fmt } from "../../lib/formatters";
 import { getCat } from "../../lib/calculations";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Pencil, X } from "lucide-react";
 
 const PER_PAGE = 5;
 
-export function RecentTransactions({ transactions, categories }) {
+export function RecentTransactions({ transactions, categories, onEdit, onDelete }) {
   const [currentPage, setCurrentPage] = useState(1);
   const listRef = useRef(null);
 
@@ -47,17 +47,37 @@ export function RecentTransactions({ transactions, categories }) {
         {pageItems.map(tx => {
           const cat = getCat(tx.category, categories);
           return (
-            <div key={tx.id} className="flex items-center justify-between py-3 border-b border-border dark:border-dark-border last:border-b-0">
-              <div className="min-w-0">
+            <div
+              key={tx.id}
+              className="flex items-center justify-between py-3 border-b border-border dark:border-dark-border last:border-b-0 group cursor-pointer"
+              onClick={() => onEdit?.(tx)}
+            >
+              <div className="min-w-0 flex-1">
                 <div className="text-text-primary dark:text-dark-text-primary text-sm font-medium truncate">{tx.note || cat?.name || tx.type}</div>
                 <div className="text-text-secondary dark:text-dark-text-secondary text-xs mt-0.5">{cat?.name} · {tx.date}</div>
               </div>
-              <div className={`text-sm font-semibold tabular-nums whitespace-nowrap ml-4 ${
+              <div className={`text-sm font-semibold tabular-nums whitespace-nowrap ml-4 mr-3 ${
                 tx.type === "income"
                   ? "text-success"
                   : "text-danger"
               }`}>
                 {tx.type === "income" ? "+" : tx.type === "expense" ? "-" : ""}{fmt(tx.amount)}
+              </div>
+              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button
+                  className="p-1.5 rounded text-text-tertiary dark:text-dark-text-tertiary hover:text-text-primary dark:hover:text-dark-text-primary transition-colors"
+                  onClick={e => { e.stopPropagation(); onEdit?.(tx); }}
+                  aria-label="Edit transaction"
+                >
+                  <Pencil size={14} />
+                </button>
+                <button
+                  className="p-1.5 rounded text-text-tertiary dark:text-dark-text-tertiary hover:text-danger transition-colors"
+                  onClick={e => { e.stopPropagation(); onDelete?.(tx); }}
+                  aria-label="Delete transaction"
+                >
+                  <X size={14} />
+                </button>
               </div>
             </div>
           );

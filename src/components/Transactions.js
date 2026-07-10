@@ -4,6 +4,8 @@ import { getCat } from "../lib/calculations";
 import { TxModal } from "./TxModal";
 import { ConfirmDialog } from "./common/ConfirmDialog";
 import { Pencil, X } from "lucide-react";
+import { CustomSelect } from "./common/CustomSelect";
+import { MonthPicker } from "./common/MonthPicker";
 
 export function Transactions({ transactions, categories, onCreate, onUpdate, onDelete }) {
   const [modal, setModal] = useState(null);
@@ -48,21 +50,21 @@ export function Transactions({ transactions, categories, onCreate, onUpdate, onD
               onChange={e => setFilter(f => ({ ...f, search: e.target.value }))}
               className="max-w-[200px] px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:outline-none focus:border-accent-primary transition-colors"
             />
-            <input
-              type="month"
+            <MonthPicker
               value={filter.month}
-              onChange={e => setFilter(f => ({ ...f, month: e.target.value }))}
-              className="max-w-[160px] px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:border-accent-primary transition-colors"
+              onChange={v => setFilter(f => ({ ...f, month: v }))}
+              className="w-40"
             />
-            <select
+            <CustomSelect
               value={filter.type}
-              onChange={e => setFilter(f => ({ ...f, type: e.target.value }))}
-              className="max-w-[140px] px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:border-accent-primary transition-colors"
-            >
-              <option value="all">All Types</option>
-              <option value="income">Income</option>
-              <option value="expense">Expense</option>
-            </select>
+              onChange={v => setFilter(f => ({ ...f, type: v }))}
+              options={[
+                { value: "all", label: "All Types" },
+                { value: "income", label: "Income" },
+                { value: "expense", label: "Expense" },
+              ]}
+              className="max-w-[140px]"
+            />
           </div>
           <div className="flex items-center gap-3">
             <span className="text-xs text-text-secondary dark:text-dark-text-secondary whitespace-nowrap tabular-nums">

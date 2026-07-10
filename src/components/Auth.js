@@ -7,7 +7,6 @@ export function Auth({ onAuth }) {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
-  const [success, setSuccess] = useState("");
   const [registered, setRegistered] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -32,7 +31,7 @@ export function Auth({ onAuth }) {
   };
 
   const submit = async () => {
-    setErr(""); setSuccess("");
+    setErr("");
     if (!validate()) return;
     setLoading(true);
     try {
@@ -151,13 +150,6 @@ export function Auth({ onAuth }) {
             {fieldErrors.password && <div className="text-danger text-xs mt-1">{fieldErrors.password}</div>}
           </div>
 
-        {success && (
-          <div className="p-2.5 rounded-md text-xs mb-5 border bg-success/15 text-success border-success flex items-start gap-2">
-            <span className="flex-shrink-0 text-sm leading-tight">✓</span>
-            <span>{success}</span>
-          </div>
-        )}
-
         {err && (
           <div className="p-2.5 rounded-md text-xs mb-5 border bg-danger/15 text-danger border-danger">
             {err}
@@ -174,9 +166,9 @@ export function Auth({ onAuth }) {
 
         <div className="text-center mt-4 text-text-secondary dark:text-dark-text-secondary text-sm">
           {mode === "login" ? (
-            <>No account? <button className="text-accent-primary dark:text-dark-accent-primary hover:underline" aria-label="Switch to register" onClick={() => { setMode("register"); setErr(""); setSuccess(""); setFieldErrors({}); }}>Register</button></>
+            <>No account? <button className="text-accent-primary dark:text-dark-accent-primary hover:underline" aria-label="Switch to register" onClick={() => { setMode("register"); setErr(""); setFieldErrors({}); }}>Register</button></>
           ) : (
-            <>Have an account? <button className="text-accent-primary dark:text-dark-accent-primary hover:underline" aria-label="Switch to login" onClick={() => { setMode("login"); setErr(""); setSuccess(""); setFieldErrors({}); }}>Sign In</button></>
+            <>Have an account? <button className="text-accent-primary dark:text-dark-accent-primary hover:underline" aria-label="Switch to login" onClick={() => { setMode("login"); setErr(""); setFieldErrors({}); }}>Sign In</button></>
           )}
         </div>
       </div>

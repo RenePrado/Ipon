@@ -19,6 +19,8 @@ import { ReportStats } from "./reports/ReportStats";
 
 
 import { DailyActivity } from "./reports/DailyActivity";
+import { MonthPicker } from "./common/MonthPicker";
+import { DatePicker } from "./common/DatePicker";
 
 
 
@@ -26,7 +28,7 @@ import { DailyActivity } from "./reports/DailyActivity";
 
 
 
-export function Reports({ transactions, categories, onNavigate }) {
+export function Reports({ transactions, categories }) {
 
 
 
@@ -246,26 +248,10 @@ export function Reports({ transactions, categories, onNavigate }) {
 
 
 
-          <input 
-
-
-
-            type="month" 
-
-
-
-            value={month} 
-
-
-
-            onChange={e => setMonth(e.target.value)} 
-
-
-
-            className="w-[180px] h-9 px-3 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:border-accent-primary transition-colors"
-
-
-
+          <MonthPicker
+            value={month}
+            onChange={setMonth}
+            className="w-40"
           />
 
 
@@ -275,61 +261,17 @@ export function Reports({ transactions, categories, onNavigate }) {
 
 
           <div className="flex gap-2 items-center">
-
-
-
-            <input 
-
-
-
-              type="date" 
-
-
-
-              value={fromDate} 
-
-
-
-              onChange={e => setFromDate(e.target.value)} 
-
-
-
-              className="w-[150px] h-9 px-3 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:border-accent-primary transition-colors"
-
-
-
+            <DatePicker
+              value={fromDate}
+              onChange={setFromDate}
+              className="w-40"
             />
-
-
-
             <span className="text-text-tertiary dark:text-dark-text-tertiary text-sm h-9 flex items-center">to</span>
-
-
-
-            <input 
-
-
-
-              type="date" 
-
-
-
-              value={toDate} 
-
-
-
-              onChange={e => setToDate(e.target.value)} 
-
-
-
-              className="w-[150px] h-9 px-3 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:border-accent-primary transition-colors"
-
-
-
+            <DatePicker
+              value={toDate}
+              onChange={setToDate}
+              className="w-40"
             />
-
-
-
           </div>
 
 
@@ -410,7 +352,7 @@ export function Reports({ transactions, categories, onNavigate }) {
 
 
 
-            <CategoryBreakdown transactions={monthTx} categories={categories} onAddTransaction={onNavigate ? () => onNavigate("transactions") : undefined} />
+            <CategoryBreakdown transactions={monthTx} categories={categories} />
 
 
 
@@ -426,7 +368,7 @@ export function Reports({ transactions, categories, onNavigate }) {
 
 
 
-        <DailyActivity byDay={byDay} onAddTransaction={onNavigate ? () => onNavigate("transactions") : undefined} />
+        <DailyActivity byDay={byDay} />
 
 
 

@@ -64,9 +64,9 @@ export default function App() {
 
         <div className="mb-6">
           <div className="text-[10px] font-medium text-text-tertiary dark:text-dark-text-tertiary uppercase tracking-widest px-3 mb-2">Overview</div>
-          <button className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm font-medium transition-colors border-l-2 ${
+          <button className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm font-medium transition-colors border-l-2 outline-none focus-visible:ring-1 focus-visible:ring-accent-primary focus-visible:ring-offset-0 rounded ${
             page === "dashboard"
-              ? "border-accent-primary text-accent-primary"
+              ? "border-accent-primary text-accent-primary bg-accent-primary/5"
               : "border-transparent text-text-secondary dark:text-dark-text-secondary hover:text-text-primary dark:hover:text-dark-text-primary"
           }`} onClick={() => setPage("dashboard")}
             aria-label="Navigate to Dashboard">
@@ -76,17 +76,17 @@ export default function App() {
 
         <div className="mb-6">
           <div className="text-[10px] font-medium text-text-tertiary dark:text-dark-text-tertiary uppercase tracking-widest px-3 mb-2">Money</div>
-          <button className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm font-medium transition-colors border-l-2 ${
+          <button className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm font-medium transition-colors border-l-2 outline-none focus-visible:ring-1 focus-visible:ring-accent-primary focus-visible:ring-offset-0 rounded ${
             page === "transactions"
-              ? "border-accent-primary text-accent-primary"
+              ? "border-accent-primary text-accent-primary bg-accent-primary/5"
               : "border-transparent text-text-secondary dark:text-dark-text-secondary hover:text-text-primary dark:hover:text-dark-text-primary"
           }`} onClick={() => setPage("transactions")}
             aria-label="Navigate to Transactions">
             <ArrowUpDown size={16} />Transactions
           </button>
-          <button className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm font-medium transition-colors border-l-2 ${
+          <button className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm font-medium transition-colors border-l-2 outline-none focus-visible:ring-1 focus-visible:ring-accent-primary focus-visible:ring-offset-0 rounded ${
             page === "budgets"
-              ? "border-accent-primary text-accent-primary"
+              ? "border-accent-primary text-accent-primary bg-accent-primary/5"
               : "border-transparent text-text-secondary dark:text-dark-text-secondary hover:text-text-primary dark:hover:text-dark-text-primary"
           }`} onClick={() => setPage("budgets")}
             aria-label="Navigate to Budgets">
@@ -96,17 +96,17 @@ export default function App() {
 
         <div className="mb-6">
           <div className="text-[10px] font-medium text-text-tertiary dark:text-dark-text-tertiary uppercase tracking-widest px-3 mb-2">Grow</div>
-          <button className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm font-medium transition-colors border-l-2 ${
+          <button className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm font-medium transition-colors border-l-2 outline-none focus-visible:ring-1 focus-visible:ring-accent-primary focus-visible:ring-offset-0 rounded ${
             page === "goals"
-              ? "border-accent-primary text-accent-primary"
+              ? "border-accent-primary text-accent-primary bg-accent-primary/5"
               : "border-transparent text-text-secondary dark:text-dark-text-secondary hover:text-text-primary dark:hover:text-dark-text-primary"
           }`} onClick={() => setPage("goals")}
             aria-label="Navigate to Savings Goals">
             <Target size={16} />Savings Goals
           </button>
-          <button className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm font-medium transition-colors border-l-2 ${
+          <button className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm font-medium transition-colors border-l-2 outline-none focus-visible:ring-1 focus-visible:ring-accent-primary focus-visible:ring-offset-0 rounded ${
             page === "reports"
-              ? "border-accent-primary text-accent-primary"
+              ? "border-accent-primary text-accent-primary bg-accent-primary/5"
               : "border-transparent text-text-secondary dark:text-dark-text-secondary hover:text-text-primary dark:hover:text-dark-text-primary"
           }`} onClick={() => setPage("reports")}
             aria-label="Navigate to Reports">
@@ -116,9 +116,9 @@ export default function App() {
 
         <div className="mb-6">
           <div className="text-[10px] font-medium text-text-tertiary dark:text-dark-text-tertiary uppercase tracking-widest px-3 mb-2">Account</div>
-          <button className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm font-medium transition-colors border-l-2 ${
+          <button className={`flex items-center gap-2.5 w-full px-3 py-2 text-sm font-medium transition-colors border-l-2 outline-none focus-visible:ring-1 focus-visible:ring-accent-primary focus-visible:ring-offset-0 rounded ${
             page === "settings"
-              ? "border-accent-primary text-accent-primary"
+              ? "border-accent-primary text-accent-primary bg-accent-primary/5"
               : "border-transparent text-text-secondary dark:text-dark-text-secondary hover:text-text-primary dark:hover:text-dark-text-primary"
           }`} onClick={() => setPage("settings")}
             aria-label="Navigate to Settings">
@@ -149,11 +149,11 @@ export default function App() {
           <ErrorBoundary key={page}>
             {dataLoading ? <PageLoader /> : (
               <>
-                {page === "dashboard" && <Dashboard transactions={transactions} categories={categories} />}
+                {page === "dashboard" && <Dashboard transactions={transactions} categories={categories} onUpdate={updateTx} onDelete={deleteTx} />}
                 {page === "transactions" && <Transactions transactions={transactions} categories={categories} onCreate={createTx} onUpdate={updateTx} onDelete={deleteTx} />}
                 {page === "budgets" && <Budgets budgets={budgets} transactions={transactions} categories={categories} onCreate={createBudget} onUpdate={updateBudget} onDelete={deleteBudget} />}
                 {page === "goals" && <Goals goals={goals} onCreate={createGoal} onUpdate={updateGoal} onDelete={deleteGoal} />}
-                {page === "reports" && <Reports transactions={transactions} categories={categories} onNavigate={setPage} />}
+                {page === "reports" && <Reports transactions={transactions} categories={categories} />}
                 {page === "settings" && <Settings session={session} userProfile={userProfile} showToast={showToast} />}
               </>
             )}

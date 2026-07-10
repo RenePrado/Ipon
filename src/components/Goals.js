@@ -4,6 +4,7 @@ import { ConfirmDialog } from "./common/ConfirmDialog";
 import { useEscapeKey } from "../hooks/useEscapeKey";
 import { useFocusTrap } from "../hooks/useFocusTrap";
 import { Pencil, Plus, X } from "lucide-react";
+import { DatePicker } from "./common/DatePicker";
 
 export function Goals({ goals, onCreate, onUpdate, onDelete }) {
   const [modal, setModal] = useState(null);
@@ -143,7 +144,7 @@ export function Goals({ goals, onCreate, onUpdate, onDelete }) {
                 </div>
 
                 {/* Progress bar */}
-                <div className="bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 rounded-full overflow-hidden mb-3" style={{ height: '4px' }}>
+                <div className="bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 rounded-full overflow-hidden mb-3" style={{ height: '8px' }}>
                   <div
                     className="h-full rounded-full"
                     style={{
@@ -222,13 +223,11 @@ export function Goals({ goals, onCreate, onUpdate, onDelete }) {
               </div>
             </div>
             <div className="mb-5">
-              <label className="block text-text-secondary dark:text-dark-text-secondary text-sm mb-1.5" htmlFor="goal-deadline">Deadline (optional)</label>
-              <input
-                id="goal-deadline"
-                type="date"
+              <label className="block text-text-secondary dark:text-dark-text-secondary text-sm mb-1.5">Deadline (optional)</label>
+              <DatePicker
                 value={form.deadline}
-                onChange={e => setForm(f => ({ ...f, deadline: e.target.value }))}
-                className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:border-accent-primary transition-colors"
+                onChange={v => setForm(f => ({ ...f, deadline: v }))}
+                optional
               />
             </div>
             <div className="flex gap-3 justify-end">

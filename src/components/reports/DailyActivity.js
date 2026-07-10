@@ -10,7 +10,7 @@ import { fmt } from "../../lib/formatters";
 
 
 
-export function DailyActivity({ byDay, onAddTransaction }) {
+export function DailyActivity({ byDay }) {
 
 
 
