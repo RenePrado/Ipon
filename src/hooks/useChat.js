@@ -1,9 +1,206 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { thisMonth, prevMonth, fmt } from "../lib/formatters";
+import { thisMonth, prevMonth, today, fmt } from "../lib/formatters";
 import { DEFAULT_CATEGORIES } from "../constants";
 import { getCat } from "../lib/calculations";
 import { reportError } from "../services/errorReporter";
+import { supabase } from "../services/supabase";
+const TOOL_DECLARATIONS = [
+  {
+    name: "addTransaction",
+    description: "Add a new income or expense transaction. Use when the user asks to record a transaction.",
+    parameters: {
+      type: "object",
+      properties: {
+        amount: { type: "number", description: "Transaction amount in Philippine Peso" },
+        type: { type: "string", enum: ["income", "expense"], description: "Transaction type" },
+        category: { type: "string", description: "Category name (e.g., Food, Transport, Salary)" },
+        date: { type: "string", description: "Transaction date in YYYY-MM-DD format" },
+        note: { type: "string", description: "Optional note or description" },
+      },
+      required: ["amount", "type", "category", "date"],
+    },
+  },
+  {
+    name: "updateTransaction",
+    description: "Update an existing transaction by ID. Only include fields that need to change.",
+    parameters: {
+      type: "object",
+      properties: {
+        id: { type: "string", description: "Transaction ID from the provided data" },
+        amount: { type: "number", description: "Transaction amount in Philippine Peso" },
+        type: { type: "string", enum: ["income", "expense"], description: "Transaction type" },
+        category: { type: "string", description: "Category name" },
+        date: { type: "string", description: "Transaction date in YYYY-MM-DD format" },
+        note: { type: "string", description: "Optional note or description" },
+      },
+      required: ["id"],
+    },
+  },
+  {
+    name: "deleteTransaction",
+    description: "Delete a transaction by ID.",
+    parameters: {
+      type: "object",
+      properties: {
+        id: { type: "string", description: "Transaction ID from the provided data" },
+      },
+      required: ["id"],
+    },
+  },
+  {
+    name: "addBudget",
+    description: "Create a new monthly budget for a category.",
+    parameters: {
+      type: "object",
+      properties: {
+        category: { type: "string", description: "Budget category name" },
+        limit_amount: { type: "number", description: "Monthly budget limit in Philippine Peso" },
+        month: { type: "string", description: "Budget month in YYYY-MM format" },
+      },
+      required: ["category", "limit_amount", "month"],
+    },
+  },
+  {
+    name: "updateBudget",
+    description: "Update an existing budget by ID. Only include fields that need to change.",
+    parameters: {
+      type: "object",
+      properties: {
+        id: { type: "string", description: "Budget ID from the provided data" },
+        category: { type: "string", description: "Budget category name" },
+        limit_amount: { type: "number", description: "Monthly budget limit in Philippine Peso" },
+        month: { type: "string", description: "Budget month in YYYY-MM format" },
+      },
+      required: ["id"],
+    },
+  },
+  {
+    name: "deleteBudget",
+    description: "Delete a budget by ID.",
+    parameters: {
+      type: "object",
+      properties: {
+        id: { type: "string", description: "Budget ID from the provided data" },
+      },
+      required: ["id"],
+    },
+  },
+  {
+    name: "addGoal",
+    description: "Create a new savings goal.",
+    parameters: {
+      type: "object",
+      properties: {
+        name: { type: "string", description: "Goal name" },
+        target_amount: { type: "number", description: "Target savings amount in Philippine Peso" },
+        deadline: { type: "string", description: "Goal deadline in YYYY-MM-DD format" },
+        current_amount: { type: "number", description: "Initial saved amount (default 0)" },
+      },
+      required: ["name", "target_amount", "deadline"],
+    },
+  },
+  {
+    name: "updateGoal",
+    description: "Update an existing savings goal by ID. Only include fields that need to change.",
+    parameters: {
+      type: "object",
+      properties: {
+        id: { type: "string", description: "Goal ID from the provided data" },
+        name: { type: "string", description: "Goal name" },
+        target_amount: { type: "number", description: "Target savings amount in Philippine Peso" },
+        deadline: { type: "string", description: "Goal deadline in YYYY-MM-DD format" },
+        current_amount: { type: "number", description: "Current saved amount in Philippine Peso" },
+      },
+      required: ["id"],
+    },
+  },
+  {
+    name: "deleteGoal",
+    description: "Delete a savings goal by ID.",
+    parameters: {
+      type: "object",
+      properties: {
+        id: { type: "string", description: "Goal ID from the provided data" },
+      },
+      required: ["id"],
+    },
+  },
+  {
+    name: "depositToGoal",
+    description: "Add a deposit to a savings goal by ID.",
+    parameters: {
+      type: "object",
+      properties: {
+        id: { type: "string", description: "Goal ID from the provided data" },
+        amount: { type: "number", description: "Deposit amount in Philippine Peso" },
+      },
+      required: ["id", "amount"],
+    },
+  },
+];
+
+async function executeToolCall(call, actions) {
+  const { name, args } = call;
+  try {
+    switch (name) {
+      case "addTransaction":
+        await actions.createTx({
+          amount: args.amount,
+          type: args.type,
+          category: args.category,
+          date: args.date,
+          note: args.note || "",
+        });
+        return { success: true, message: `Transaction added: ${args.type} ${fmt(args.amount)}` };
+      case "updateTransaction": {
+        const { id, ...form } = args;
+        await actions.updateTx(id, form);
+        return { success: true, message: "Transaction updated" };
+      }
+      case "deleteTransaction":
+        await actions.deleteTx(args.id);
+        return { success: true, message: "Transaction deleted" };
+      case "addBudget":
+        await actions.createBudget({
+          category: args.category,
+          limit_amount: args.limit_amount,
+          month: args.month,
+        });
+        return { success: true, message: `Budget created: ${args.category} limit ${fmt(args.limit_amount)}` };
+      case "updateBudget": {
+        const { id, ...form } = args;
+        await actions.updateBudget(id, form);
+        return { success: true, message: "Budget updated" };
+      }
+      case "deleteBudget":
+        await actions.deleteBudget(args.id);
+        return { success: true, message: "Budget deleted" };
+      case "addGoal":
+        await actions.createGoal({
+          name: args.name,
+          target_amount: args.target_amount,
+          deadline: args.deadline,
+          current_amount: args.current_amount || 0,
+        });
+        return { success: true, message: `Goal created: ${args.name} target ${fmt(args.target_amount)}` };
+      case "updateGoal": {
+        const { id, ...form } = args;
+        await actions.updateGoal(id, form);
+        return { success: true, message: "Goal updated" };
+      }
+      case "deleteGoal":
+        await actions.deleteGoal(args.id);
+        return { success: true, message: "Goal deleted" };
+      case "depositToGoal":
+        await actions.depositGoal(args.id, args.amount);
+        return { success: true, message: `Deposited ${fmt(args.amount)} to goal` };
+      default:
+        return { success: false, message: `Unknown tool: ${name}` };
+    }
+  } catch (e) {
+    return { success: false, message: e?.message || "Action failed" };
+  }
+}
 
 function buildSystemPrompt(transactions, budgets, goals, userProfile) {
   const month = thisMonth();
@@ -50,7 +247,26 @@ function buildSystemPrompt(transactions, budgets, goals, userProfile) {
     return `- ${g.name}: Target ${fmt(g.target_amount)}, Saved ${fmt(g.current_amount)} (${pct}%)`;
   }).join("\n");
 
-  return `You are Piso, a personal finance assistant for a Filipino user. Answer questions using only the provided financial data. Keep responses concise and conversational. Use Philippine Peso (₱) for all amounts.
+  const txLines = transactions.slice(0, 50).map(t => {
+    const cat = getCat(t.category, DEFAULT_CATEGORIES);
+    return `- ID: ${t.id} | ${t.date} | ${t.type} | ${cat?.name || t.category} | ${fmt(t.amount)}${t.note ? ` | ${t.note}` : ""}`;
+  }).join("\n") || "- No transactions";
+
+  const budgetLines = budgets.map(b => `- ID: ${b.id} | ${b.category} | Limit ${fmt(b.limit_amount)} | Month ${b.month}`).join("\n") || "- No budgets";
+  const goalLines = goals.map(g => `- ID: ${g.id} | ${g.name} | Target ${fmt(g.target_amount)} | Saved ${fmt(g.current_amount)} | Deadline ${g.deadline}`).join("\n") || "- No goals";
+
+  return `You are Piso, a personal finance assistant for a Filipino user. You can answer questions AND perform actions on the user's financial data using the provided functions. Keep responses concise and conversational. Use Philippine Peso (₱) for all amounts.
+
+Available actions (call the matching function when appropriate):
+- addTransaction, updateTransaction, deleteTransaction
+- addBudget, updateBudget, deleteBudget
+- addGoal, updateGoal, deleteGoal, depositToGoal
+
+When performing actions:
+- If a user asks to add/edit/delete something, gather any missing required info (amount, category, date, etc.) before calling a function.
+- For updates or deletes, use the exact IDs from the data below.
+- Confirm completed actions with a brief summary.
+- If the requested action is ambiguous or would delete data, ask the user to confirm first.
 
 Format your responses using clean minimal markdown:
 - Use **bold** for important numbers and category names
@@ -60,8 +276,10 @@ Format your responses using clean minimal markdown:
 - Keep responses short and scannable
 
 User: ${userProfile?.name || "User"}
+Today: ${today()}
 Current Month: ${month}
 Previous Month: ${prev}
+Available Categories: ${DEFAULT_CATEGORIES.map(c => c.name).join(", ")}
 
 Current Month:
 - Total Income: ${fmt(cur.income)}
@@ -84,10 +302,19 @@ Active Budgets:
 ${budgetInfo || "- No budgets set"}
 
 Savings Goals:
-${goalInfo || "- No savings goals set"}`;
+${goalInfo || "- No savings goals set"}
+
+Recent Transactions (use ID for updates/deletes):
+${txLines}
+
+Budget Records:
+${budgetLines}
+
+Goal Records:
+${goalLines}`;
 }
 
-export function useChat(transactions, budgets, goals, userProfile) {
+export function useChat(transactions, budgets, goals, userProfile, actions = {}) {
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -95,10 +322,15 @@ export function useChat(transactions, budgets, goals, userProfile) {
   const requestIdRef = useRef(0);
   const streamIntervalRef = useRef(null);
   const messagesRef = useRef(messages);
+  const actionsRef = useRef(actions);
 
   useEffect(() => {
     messagesRef.current = messages;
   }, [messages]);
+
+  useEffect(() => {
+    actionsRef.current = actions;
+  }, [actions]);
 
   const sendMessage = useCallback(async (text) => {
     if (!text.trim() || isTyping) return;
@@ -112,16 +344,12 @@ export function useChat(transactions, budgets, goals, userProfile) {
     setIsTyping(true);
 
     try {
-      const key = process.env.REACT_APP_GEMINI_KEY;
-      if (!key || key.trim() === "" || key === "undefined") {
+      if (!supabase) {
         if (requestIdRef.current !== currentRequestId) return;
-        setMessages(prev => [...prev, { role: "assistant", content: "AI chat is not configured. Please set up the Gemini API key." }]);
+        setMessages(prev => [...prev, { role: "assistant", content: "AI chat is not configured. Please set up Supabase." }]);
         setIsTyping(false);
         return;
       }
-
-      const genAI = new GoogleGenerativeAI(key);
-      const model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite" });
 
       const systemPrompt = buildSystemPrompt(transactions, budgets, goals, userProfile);
       const history = currentMessages.map(m => ({
@@ -129,23 +357,62 @@ export function useChat(transactions, budgets, goals, userProfile) {
         parts: [{ text: m.content }],
       }));
 
-      const chat = model.startChat({
-        history: [
-          { role: "user", parts: [{ text: systemPrompt }] },
-          { role: "model", parts: [{ text: "Got it! I'm ready to help with your finances." }] },
-          ...history,
-        ],
-      });
-
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => reject(new Error("Request timeout")), 20000);
       });
 
-      const response = await Promise.race([chat.sendMessage(text), timeoutPromise]);
+      let chatHistory = history;
+      let message = text;
+      let responseText = "";
 
-      if (requestIdRef.current !== currentRequestId) return;
+      let rounds = 0;
+      while (rounds < 3) {
+        const result = await Promise.race([
+          supabase.functions.invoke("gemini-chat", {
+            body: {
+              systemPrompt,
+              history: chatHistory,
+              message,
+              toolDeclarations: TOOL_DECLARATIONS,
+            },
+          }),
+          timeoutPromise,
+        ]);
+        if (requestIdRef.current !== currentRequestId) return;
 
-      const responseText = response.response.text();
+        if (result.error) {
+          let errDetail = result.error.message || "Chat request failed";
+          if (result.error.context) {
+            try {
+              const ctx = typeof result.error.context === "string"
+                ? JSON.parse(result.error.context)
+                : result.error.context;
+              errDetail = ctx.error || ctx.message || errDetail;
+            } catch (_) {}
+          }
+          throw new Error(errDetail);
+        }
+
+        const data = result.data;
+
+        if (data.functionCalls && data.functionCalls.length > 0) {
+          const functionResponses = [];
+          for (const call of data.functionCalls) {
+            const execResult = await executeToolCall(call, actionsRef.current);
+            functionResponses.push({ functionResponse: { name: call.name, response: execResult } });
+          }
+          chatHistory = [
+            ...chatHistory,
+            { role: "user", parts: [{ text: message }] },
+            { role: "model", parts: data.functionCalls.map(c => ({ functionCall: { name: c.name, args: c.args } })) },
+          ];
+          message = functionResponses;
+          rounds++;
+        } else {
+          responseText = data.text || "";
+          break;
+        }
+      }
 
       const assistantIndex = currentMessages.length + 1;
       setMessages(prev => {
