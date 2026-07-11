@@ -4,8 +4,8 @@ import ReactMarkdown from "react-markdown";
 
 const INITIAL_CHIPS = [
   "How am I doing this month?",
-  "Where am I overspending?",
-  "How can I save more?",
+  "What are my top expenses?",
+  "Add a new expense",
 ];
 
 function Chip({ label, index, onClick }) {
@@ -135,7 +135,7 @@ export function AIChatbot({ messages, isTyping, isStreaming, showSuggestions, se
                 <div className="flex gap-2 animate-messageSlideIn" style={{ animationDelay: "300ms", animationFillMode: "backwards" }}>
                   <PisoAvatar />
                   <div className="bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 rounded-lg rounded-tl-none p-2.5 text-sm text-text-secondary dark:text-dark-text-secondary max-w-[80%] leading-relaxed">
-                    Hi! I'm Piso, your personal finance assistant. Ask me anything about your finances, budgets, or savings goals.
+                    Hi! I'm Piso, your personal finance assistant. Ask me anything about your finances, or tell me to add, edit, or delete transactions, budgets, and savings goals.
                   </div>
                 </div>
               )}
@@ -148,10 +148,7 @@ export function AIChatbot({ messages, isTyping, isStreaming, showSuggestions, se
                 </div>
               )}
 
-              {messages.map((msg, i) => {
-                const isLastAssistant = i === messages.length - 1 && msg.role === "assistant";
-                const showCursor = isLastAssistant && isStreaming;
-                return (
+              {messages.map((msg, i) => (
                 <div
                   key={i}
                   className={`flex gap-2 animate-messageSlideIn ${msg.role === "user" ? "justify-end" : "justify-start"}`}
@@ -181,13 +178,9 @@ export function AIChatbot({ messages, isTyping, isStreaming, showSuggestions, se
                     ) : (
                       msg.content
                     )}
-                    {showCursor && (
-                      <span className="inline-block w-[2px] h-[1em] bg-text-secondary dark:bg-dark-text-secondary ml-0.5 align-text-bottom animate-blinkCursor" />
-                    )}
                   </div>
                 </div>
-                );
-              })}
+              ))}
 
               {/* Typing Indicator - only during API wait, not during streaming */}
               {isTyping && !isStreaming && (
