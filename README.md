@@ -10,7 +10,6 @@ Ipon, a Filipino for to save, is a personal finance dashboard combining transact
 
 ### Dashboard
 - Net Balance, Income, Expenses, Savings Rate, and Transaction count for the current month
-- Live clock with local time, date, and timezone
 - Recent transactions with pagination and category icons
 - Spending by category with progress bars and percentages
 

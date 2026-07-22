@@ -12,6 +12,10 @@ import { useFocusTrap } from "../hooks/useFocusTrap";
 
 import { Pencil, X } from "lucide-react";
 
+import { FloatingActionButton } from "./common/FloatingActionButton";
+
+import { LongPressItem } from "./common/LongPressItem";
+
 import { CustomSelect } from "./common/CustomSelect";
 
 import { MonthPicker } from "./common/MonthPicker";
@@ -120,37 +124,33 @@ export function Budgets({ budgets, transactions, categories, onCreate, onUpdate,
 
       {/* Summary bar */}
 
-      <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg border border-border dark:border-dark-border p-5 mb-6">
+      <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg border border-border dark:border-dark-border py-6 px-5 mb-6">
 
-        <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex items-center justify-between gap-4">
 
-          <div className="flex items-center gap-6">
+          <div className="flex-1 grid grid-cols-3 items-center divide-x divide-border dark:divide-dark-border">
 
-            <div>
+            <div className="text-center px-1 sm:px-2 min-w-0">
 
-              <div className="text-text-secondary dark:text-dark-text-secondary text-[11px] font-medium uppercase tracking-wider mb-1">Total Budgeted</div>
+              <div className="text-text-secondary dark:text-dark-text-secondary text-[9px] sm:text-sm font-medium uppercase tracking-wider whitespace-nowrap mb-1">Total Budgeted</div>
 
-              <div className="text-xl font-semibold tabular-nums text-text-primary dark:text-dark-text-primary">{fmt(totalBudgeted)}</div>
-
-            </div>
-
-            <div className="w-px h-10 bg-border dark:bg-dark-border" />
-
-            <div>
-
-              <div className="text-text-secondary dark:text-dark-text-secondary text-[11px] font-medium uppercase tracking-wider mb-1">Total Spent</div>
-
-              <div className="text-xl font-semibold tabular-nums text-danger">{fmt(totalSpent)}</div>
+              <div className="text-sm sm:text-xl font-semibold tabular-nums truncate text-text-primary dark:text-dark-text-primary">{fmt(totalBudgeted)}</div>
 
             </div>
 
-            <div className="w-px h-10 bg-border dark:bg-dark-border" />
+            <div className="text-center px-1 sm:px-2 min-w-0">
 
-            <div>
+              <div className="text-text-secondary dark:text-dark-text-secondary text-[9px] sm:text-sm font-medium uppercase tracking-wider whitespace-nowrap mb-1">Total Spent</div>
 
-              <div className="text-text-secondary dark:text-dark-text-secondary text-[11px] font-medium uppercase tracking-wider mb-1">Remaining</div>
+              <div className="text-sm sm:text-xl font-semibold tabular-nums truncate text-danger">{fmt(totalSpent)}</div>
 
-              <div className={`text-xl font-semibold tabular-nums ${totalRemaining >= 0 ? 'text-success' : 'text-danger'}`}>{fmt(totalRemaining)}</div>
+            </div>
+
+            <div className="text-center px-1 sm:px-2 min-w-0">
+
+              <div className="text-text-secondary dark:text-dark-text-secondary text-[9px] sm:text-sm font-medium uppercase tracking-wider whitespace-nowrap mb-1">Remaining</div>
+
+              <div className={`text-sm sm:text-xl font-semibold tabular-nums truncate ${totalRemaining >= 0 ? 'text-success' : 'text-danger'}`}>{fmt(totalRemaining)}</div>
 
             </div>
 
@@ -158,7 +158,7 @@ export function Budgets({ budgets, transactions, categories, onCreate, onUpdate,
 
           <button
 
-            className="px-3 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium transition-colors"
+            className="hidden sm:block px-3 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium transition-colors"
 
             onClick={openNew}
 
@@ -202,60 +202,34 @@ export function Budgets({ budgets, transactions, categories, onCreate, onUpdate,
 
             const barColor = over ? 'var(--color-danger)' : near ? 'var(--color-warning)' : 'var(--color-success)';
 
-
-
             return (
-
-              <div
-
+              <LongPressItem
                 key={b.id}
-
-                className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 border border-border dark:border-dark-border"
-
+                onLongPress={() => setDeleteConfirm(b)}
+                onClick={() => { setForm({ category: b.category, limit_amount: String(b.limit_amount), month: b.month }); setModal(b); }}
+                className={(isLongPressing) => `bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 border border-border dark:border-dark-border cursor-pointer ${isLongPressing ? 'bg-bg-elevated-2 dark:bg-dark-bg-elevated-2' : ''}`}
               >
-
                 {/* Header row */}
-
                 <div className="flex items-center justify-between mb-3">
-
                   <div className="text-text-primary dark:text-dark-text-primary font-medium text-sm">
-
                     {cat?.icon} {cat?.name || "Unknown"}
-
                   </div>
-
-                  <div className="flex items-center gap-1">
-
+                  <div className="hidden sm:flex items-center gap-1">
                     <button
-
                       className="p-1.5 rounded text-text-tertiary dark:text-dark-text-tertiary hover:text-text-primary dark:hover:text-dark-text-primary transition-colors"
-
                       onClick={() => { setForm({ category: b.category, limit_amount: String(b.limit_amount), month: b.month }); setModal(b); }}
-
                       aria-label="Edit budget"
-
                     >
-
                       <Pencil size={14} />
-
                     </button>
-
                     <button
-
                       className="p-1.5 rounded text-text-tertiary dark:text-dark-text-tertiary hover:text-danger transition-colors"
-
                       onClick={() => setDeleteConfirm(b)}
-
                       aria-label="Delete budget"
-
                     >
-
                       <X size={14} />
-
                     </button>
-
                   </div>
-
                 </div>
 
 
@@ -312,7 +286,7 @@ export function Budgets({ budgets, transactions, categories, onCreate, onUpdate,
 
                 </div>
 
-              </div>
+              </LongPressItem>
 
             );
 
@@ -328,7 +302,7 @@ export function Budgets({ budgets, transactions, categories, onCreate, onUpdate,
 
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onClick={e => e.target === e.currentTarget && setModal(false)}>
 
-          <div ref={modalRef} className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 w-full max-w-md border border-border dark:border-dark-border" role="dialog" aria-modal="true" aria-labelledby="budget-modal-title">
+          <div ref={modalRef} className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 w-full max-w-full sm:max-w-md mx-4 sm:mx-0 border border-border dark:border-dark-border" role="dialog" aria-modal="true" aria-labelledby="budget-modal-title">
 
             <div className="flex items-center justify-between mb-5">
 
@@ -362,7 +336,7 @@ export function Budgets({ budgets, transactions, categories, onCreate, onUpdate,
 
             </div>
 
-            <div className="grid grid-cols-2 gap-3 mb-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
 
               <div>
 
@@ -459,6 +433,8 @@ export function Budgets({ budgets, transactions, categories, onCreate, onUpdate,
         />
 
       )}
+
+      <FloatingActionButton onClick={openNew} label="New Budget" ariaLabel="Add new budget" />
 
     </div>
 

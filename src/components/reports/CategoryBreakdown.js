@@ -64,7 +64,7 @@ export function CategoryBreakdown({ transactions, categories, limit = 7 }) {
 
             />
 
-            <span className="text-sm text-text-secondary dark:text-dark-text-secondary whitespace-nowrap flex-shrink-0" style={{ minWidth: '110px' }}>
+            <span className="text-xs sm:text-sm text-text-secondary dark:text-dark-text-secondary whitespace-nowrap flex-shrink-0 min-w-[70px] sm:min-w-[110px]">
 
               {name}
 
@@ -82,15 +82,15 @@ export function CategoryBreakdown({ transactions, categories, limit = 7 }) {
 
             </div>
 
-            <div className="flex items-center gap-2 flex-shrink-0 justify-end" style={{ minWidth: '100px' }}>
+            <div className="flex items-center gap-2 flex-shrink-0 justify-end min-w-[70px] sm:min-w-[100px]">
 
-              <span className="text-sm font-semibold text-text-primary dark:text-dark-text-primary whitespace-nowrap tabular-nums">
+              <span className="text-xs sm:text-sm font-semibold text-text-primary dark:text-dark-text-primary whitespace-nowrap tabular-nums">
 
                 {fmt(amt)}
 
               </span>
 
-              <span className="text-[11px] px-2 py-0.5 rounded-full bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 text-text-secondary dark:text-dark-text-secondary whitespace-nowrap text-center tabular-nums" style={{ minWidth: '42px' }}>
+              <span className="text-[10px] sm:text-[11px] px-1.5 sm:px-2 py-0.5 rounded-full bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 text-text-secondary dark:text-dark-text-secondary whitespace-nowrap text-center tabular-nums min-w-[38px] sm:min-w-[42px]">
 
                 {Math.round((amt / total) * 100)}%
 

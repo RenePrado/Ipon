@@ -60,7 +60,7 @@ export function Reports({ transactions, categories }) {
 
 
 
-    const filteredTx = viewMode === 'monthly' 
+    const filteredTx = viewMode === 'monthly'
 
 
 
@@ -152,162 +152,81 @@ export function Reports({ transactions, categories }) {
 
 
 
-      <div className="flex gap-3 mb-6 items-center flex-wrap">
-
-
-
-        <div className="flex gap-2 items-center">
-
-
-
-          <button 
-
-
-
-            className={`px-4 py-2 rounded-md text-sm font-medium h-9 flex items-center justify-center transition-colors duration-300 ${
-
-
-
-              viewMode === 'monthly' 
-
-
-
-                ? 'bg-accent-primary hover:bg-accent-primary/90 text-white border border-transparent' 
-
-
-
-                : 'bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary border border-border dark:border-dark-border hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2'
-
-
-
-            }`}
-
-
-
-            onClick={() => setViewMode('monthly')}
-
-
-
-          >
-
-
-
-            Monthly
-
-
-
-          </button>
-
-
-
-          <button 
-
-
-
-            className={`px-4 py-2 rounded-md text-sm font-medium h-9 flex items-center justify-center transition-colors duration-300 ${
-
-
-
-              viewMode === 'custom' 
-
-
-
-                ? 'bg-accent-primary hover:bg-accent-primary/90 text-white border border-transparent' 
-
-
-
-                : 'bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary border border-border dark:border-dark-border hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2'
-
-
-
-            }`}
-
-
-
-            onClick={() => setViewMode('custom')}
-
-
-
-          >
-
-
-
-            Custom Range
-
-
-
-          </button>
-
-
-
-        </div>
-
-
-
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-3 mb-4 sm:mb-6 items-start sm:items-center">
         {viewMode === 'monthly' ? (
-
-
-
-          <MonthPicker
-            value={month}
-            onChange={setMonth}
-            className="w-40"
-          />
-
-
-
-        ) : (
-
-
-
-          <div className="flex gap-2 items-center">
-            <DatePicker
-              value={fromDate}
-              onChange={setFromDate}
-              className="w-40"
-            />
-            <span className="text-text-tertiary dark:text-dark-text-tertiary text-sm h-9 flex items-center">to</span>
-            <DatePicker
-              value={toDate}
-              onChange={setToDate}
-              className="w-40"
+          <div className="grid grid-cols-3 sm:flex sm:flex-row gap-1.5 sm:gap-2 w-full sm:w-auto items-center">
+            <button
+              className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium h-8 sm:h-9 flex items-center justify-center transition-colors duration-300 ${
+                viewMode === 'monthly'
+                  ? 'bg-accent-primary hover:bg-accent-primary/90 text-white border border-transparent'
+                  : 'bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary border border-border dark:border-dark-border hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2'
+              }`}
+              onClick={() => setViewMode('monthly')}
+            >
+              Monthly
+            </button>
+            <button
+              className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium h-8 sm:h-9 flex items-center justify-center transition-colors duration-300 ${
+                viewMode === 'custom'
+                  ? 'bg-accent-primary hover:bg-accent-primary/90 text-white border border-transparent'
+                  : 'bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary border border-border dark:border-dark-border hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2'
+              }`}
+              onClick={() => setViewMode('custom')}
+            >
+              Custom Range
+            </button>
+            <MonthPicker
+              value={month}
+              onChange={setMonth}
+              className="w-full sm:w-40"
             />
           </div>
-
-
-
+        ) : (
+          <>
+            <div className="flex gap-2 items-center w-full sm:w-auto">
+              <button
+                className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-md text-xs sm:text-sm font-medium h-8 sm:h-9 flex items-center justify-center transition-colors duration-300 ${
+                  viewMode === 'monthly'
+                    ? 'bg-accent-primary hover:bg-accent-primary/90 text-white border border-transparent'
+                    : 'bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary border border-border dark:border-dark-border hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2'
+                }`}
+                onClick={() => setViewMode('monthly')}
+              >
+                Monthly
+              </button>
+              <button
+                className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-md text-xs sm:text-sm font-medium h-8 sm:h-9 flex items-center justify-center transition-colors duration-300 ${
+                  viewMode === 'custom'
+                    ? 'bg-accent-primary hover:bg-accent-primary/90 text-white border border-transparent'
+                    : 'bg-bg-elevated dark:bg-dark-bg-elevated text-text-primary dark:text-dark-text-primary border border-border dark:border-dark-border hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2'
+                }`}
+                onClick={() => setViewMode('custom')}
+              >
+                Custom Range
+              </button>
+            </div>
+            <div className="flex gap-2 items-center w-full sm:w-auto">
+              <DatePicker
+                value={fromDate}
+                onChange={setFromDate}
+                className="w-full sm:w-40"
+              />
+              <span className="text-text-tertiary dark:text-dark-text-tertiary text-xs sm:text-sm h-8 sm:h-9 flex items-center">to</span>
+              <DatePicker
+                value={toDate}
+                onChange={setToDate}
+                className="w-full sm:w-40"
+              />
+            </div>
+          </>
         )}
-
-
-
-        <span className="text-text-tertiary dark:text-dark-text-tertiary text-sm h-9 flex items-center">
-
-
-
-          {viewMode === 'monthly' 
-
-
-
-            ? `Showing report for ${month}` 
-
-
-
-            : (fromDate && toDate 
-
-
-
-              ? `Showing report from ${fromDate} to ${toDate}` 
-
-
-
+        <span className="text-text-tertiary dark:text-dark-text-tertiary text-xs sm:text-sm h-8 sm:h-9 flex items-center">
+          {viewMode === 'monthly'
+            ? `Showing report for ${month}`
+            : (fromDate && toDate
+              ? `Showing report from ${fromDate} to ${toDate}`
               : 'Select date range')}
-
-
-
         </span>
-
-
-
       </div>
 
 
@@ -328,7 +247,9 @@ export function Reports({ transactions, categories }) {
 
 
 
-      <PeriodComparisonDonut transactions={filteredTx} categories={categories} />
+      <div className="overflow-x-auto mb-4 sm:mb-6">
+        <PeriodComparisonDonut transactions={filteredTx} categories={categories} />
+      </div>
 
 
 
@@ -336,7 +257,7 @@ export function Reports({ transactions, categories }) {
 
 
 
-      <div className="grid grid-cols-2 gap-6 mt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
 
 
 

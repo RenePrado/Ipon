@@ -8,9 +8,13 @@ import { useEscapeKey } from "../hooks/useEscapeKey";
 
 import { useFocusTrap } from "../hooks/useFocusTrap";
 
-import { Pencil, Plus, X } from "lucide-react";
+import { Pencil, PlusCircle, X } from "lucide-react";
 
 import { DatePicker } from "./common/DatePicker";
+
+import { FloatingActionButton } from "./common/FloatingActionButton";
+
+import { LongPressItem } from "./common/LongPressItem";
 
 
 
@@ -150,37 +154,33 @@ export function Goals({ goals, onCreate, onUpdate, onDelete }) {
 
       {/* Summary bar */}
 
-      <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg border border-border dark:border-dark-border p-5 mb-6">
+      <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg border border-border dark:border-dark-border py-6 px-5 mb-6">
 
-        <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex items-center justify-between gap-4">
 
-          <div className="flex items-center gap-6">
+          <div className="flex-1 grid grid-cols-3 items-center divide-x divide-border dark:divide-dark-border">
 
-            <div>
+            <div className="text-center px-1 sm:px-2 min-w-0">
 
-              <div className="text-text-secondary dark:text-dark-text-secondary text-[11px] font-medium uppercase tracking-wider mb-1">Total Goals</div>
+              <div className="text-text-secondary dark:text-dark-text-secondary text-[9px] sm:text-sm font-medium uppercase tracking-wider whitespace-nowrap mb-1">Total Goals</div>
 
-              <div className="text-xl font-semibold tabular-nums text-text-primary dark:text-dark-text-primary">{totalGoals}</div>
-
-            </div>
-
-            <div className="w-px h-10 bg-border dark:bg-dark-border" />
-
-            <div>
-
-              <div className="text-text-secondary dark:text-dark-text-secondary text-[11px] font-medium uppercase tracking-wider mb-1">Total Saved</div>
-
-              <div className="text-xl font-semibold tabular-nums text-accent-primary">{fmt(totalSaved)}</div>
+              <div className="text-sm sm:text-xl font-semibold tabular-nums truncate text-text-primary dark:text-dark-text-primary">{totalGoals}</div>
 
             </div>
 
-            <div className="w-px h-10 bg-border dark:bg-dark-border" />
+            <div className="text-center px-1 sm:px-2 min-w-0">
 
-            <div>
+              <div className="text-text-secondary dark:text-dark-text-secondary text-[9px] sm:text-sm font-medium uppercase tracking-wider whitespace-nowrap mb-1">Total Saved</div>
 
-              <div className="text-text-secondary dark:text-dark-text-secondary text-[11px] font-medium uppercase tracking-wider mb-1">Total Target</div>
+              <div className="text-sm sm:text-xl font-semibold tabular-nums truncate text-accent-primary">{fmt(totalSaved)}</div>
 
-              <div className="text-xl font-semibold tabular-nums text-text-primary dark:text-dark-text-primary">{fmt(totalTarget)}</div>
+            </div>
+
+            <div className="text-center px-1 sm:px-2 min-w-0">
+
+              <div className="text-text-secondary dark:text-dark-text-secondary text-[9px] sm:text-sm font-medium uppercase tracking-wider whitespace-nowrap mb-1">Total Target</div>
+
+              <div className="text-sm sm:text-xl font-semibold tabular-nums truncate text-text-primary dark:text-dark-text-primary">{fmt(totalTarget)}</div>
 
             </div>
 
@@ -188,7 +188,7 @@ export function Goals({ goals, onCreate, onUpdate, onDelete }) {
 
           <button
 
-            className="px-3 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium transition-colors"
+            className="hidden sm:block px-3 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium transition-colors"
 
             onClick={openNew}
 
@@ -225,13 +225,11 @@ export function Goals({ goals, onCreate, onUpdate, onDelete }) {
             const done = pct >= 100;
 
             return (
-
-              <div
-
+              <LongPressItem
                 key={g.id}
-
-                className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 border border-border dark:border-dark-border"
-
+                onLongPress={() => setDeleteConfirm(g)}
+                onClick={() => openEdit(g)}
+                className={(isLongPressing) => `bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 border border-border dark:border-dark-border cursor-pointer ${isLongPressing ? 'bg-bg-elevated-2 dark:bg-dark-bg-elevated-2' : ''}`}
               >
 
                 {/* Header */}
@@ -240,36 +238,21 @@ export function Goals({ goals, onCreate, onUpdate, onDelete }) {
 
                   <div className="text-text-primary dark:text-dark-text-primary font-medium text-sm">{g.name}</div>
 
-                  <div className="flex items-center gap-1">
-
+                  <div className="hidden sm:flex items-center gap-1">
                     <button
-
                       className="p-1.5 rounded text-text-tertiary dark:text-dark-text-tertiary hover:text-text-primary dark:hover:text-dark-text-primary transition-colors"
-
                       onClick={() => openEdit(g)}
-
                       aria-label="Edit goal"
-
                     >
-
                       <Pencil size={14} />
-
                     </button>
-
                     <button
-
                       className="p-1.5 rounded text-text-tertiary dark:text-dark-text-tertiary hover:text-danger transition-colors"
-
                       onClick={() => setDeleteConfirm(g)}
-
                       aria-label="Delete goal"
-
                     >
-
                       <X size={14} />
-
                     </button>
-
                   </div>
 
                 </div>
@@ -328,13 +311,16 @@ export function Goals({ goals, onCreate, onUpdate, onDelete }) {
 
                     <button
 
-                      className="px-2.5 py-1 rounded-md border border-border dark:border-dark-border text-text-secondary dark:text-dark-text-secondary text-xs font-medium hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors flex items-center gap-1"
+                      aria-label="Deposit to goal"
+                      className="p-1.5 rounded-md border border-border dark:border-dark-border text-text-secondary dark:text-dark-text-secondary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors flex items-center"
 
-                      onClick={() => setDepositModal(g)}
+                      onClick={(e) => { e.stopPropagation(); setDepositModal(g); }}
+                      onTouchStart={(e) => e.stopPropagation()}
+                      onTouchEnd={(e) => e.stopPropagation()}
 
                     >
 
-                      <Plus size={12} /> Deposit
+                      <PlusCircle size={16} />
 
                     </button>
 
@@ -342,7 +328,7 @@ export function Goals({ goals, onCreate, onUpdate, onDelete }) {
 
                 </div>
 
-              </div>
+              </LongPressItem>
 
             );
 
@@ -358,7 +344,7 @@ export function Goals({ goals, onCreate, onUpdate, onDelete }) {
 
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onClick={e => e.target === e.currentTarget && setModal(null)}>
 
-          <div ref={goalModalRef} className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 w-full max-w-md border border-border dark:border-dark-border" role="dialog" aria-modal="true" aria-labelledby="goal-modal-title">
+          <div ref={goalModalRef} className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 w-full max-w-full sm:max-w-md mx-4 sm:mx-0 border border-border dark:border-dark-border" role="dialog" aria-modal="true" aria-labelledby="goal-modal-title">
 
             <div className="flex items-center justify-between mb-5">
 
@@ -394,7 +380,7 @@ export function Goals({ goals, onCreate, onUpdate, onDelete }) {
 
             </div>
 
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
 
               <div>
 
@@ -504,7 +490,7 @@ export function Goals({ goals, onCreate, onUpdate, onDelete }) {
 
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onClick={e => e.target === e.currentTarget && setDepositModal(null)}>
 
-          <div ref={depositModalRef} className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 w-full max-w-md border border-border dark:border-dark-border" role="dialog" aria-modal="true" aria-labelledby="deposit-modal-title">
+          <div ref={depositModalRef} className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 w-full max-w-full sm:max-w-md mx-4 sm:mx-0 border border-border dark:border-dark-border" role="dialog" aria-modal="true" aria-labelledby="deposit-modal-title">
 
             <div className="flex items-center justify-between mb-5">
 
@@ -597,6 +583,8 @@ export function Goals({ goals, onCreate, onUpdate, onDelete }) {
         />
 
       )}
+
+      <FloatingActionButton onClick={openNew} label="New Goal" ariaLabel="Add new goal" />
 
     </div>
 

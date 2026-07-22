@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../services/supabase";
-import { Lock, Eye, EyeOff } from "lucide-react";
+import { Lock, Eye, EyeOff, LogOut } from "lucide-react";
 
-export function Settings({ session, userProfile, showToast }) {
+export function Settings({ session, userProfile, showToast, signOut, signingOut }) {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: "", newPassword: "", confirmPassword: "" });
   const [errors, setErrors] = useState({});
@@ -29,7 +29,7 @@ export function Settings({ session, userProfile, showToast }) {
       .from("profiles")
       .update({ name: form.name })
       .eq("id", session.user.id);
-    
+
     if (error) {
       showToast(error.message, "error");
     } else {
@@ -56,7 +56,7 @@ export function Settings({ session, userProfile, showToast }) {
     const { error } = await supabase.auth.updateUser({
       password: form.newPassword
     });
-    
+
     if (error) {
       showToast(error.message, "error");
     } else {
@@ -76,7 +76,7 @@ export function Settings({ session, userProfile, showToast }) {
   const email = session?.user?.email || "";
 
   return (
-    <div className="grid grid-cols-2 gap-6 items-start">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
       {/* Profile Settings */}
       <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 border border-border dark:border-dark-border h-full flex flex-col">
         <div className="text-text-secondary dark:text-dark-text-secondary text-sm font-medium uppercase tracking-wider mb-5">Profile Settings</div>
@@ -191,6 +191,22 @@ export function Settings({ session, userProfile, showToast }) {
             disabled={loading}
           >
             {loading ? "Updating..." : "Update Password"}
+          </button>
+        </div>
+      </div>
+
+      {/* Sign Out - Mobile only */}
+      <div className="lg:hidden bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 border border-border dark:border-dark-border h-full flex flex-col">
+        <div className="text-text-secondary dark:text-dark-text-secondary text-sm font-medium uppercase tracking-wider mb-5">Account</div>
+
+        <div className="flex-1 flex flex-col justify-center">
+          <button
+            className="w-full px-3 py-2 rounded-md border border-border dark:border-dark-border text-danger hover:bg-danger/10 dark:hover:bg-danger/10 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            onClick={signOut}
+            disabled={signingOut}
+          >
+            <LogOut size={16} />
+            {signingOut ? "Signing out..." : "Sign Out"}
           </button>
         </div>
       </div>

@@ -102,7 +102,7 @@ export function TxModal({ tx, categories, onSave, onClose }) {
 
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onClick={e => e.target === e.currentTarget && onClose()}>
 
-      <div ref={modalRef} className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 w-full max-w-md border border-border dark:border-dark-border" role="dialog" aria-modal="true" aria-labelledby="tx-modal-title">
+      <div ref={modalRef} className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 w-full max-w-full sm:max-w-md mx-4 sm:mx-0 border border-border dark:border-dark-border" role="dialog" aria-modal="true" aria-labelledby="tx-modal-title">
 
         <div className="flex items-center justify-between mb-5">
 
@@ -154,7 +154,7 @@ export function TxModal({ tx, categories, onSave, onClose }) {
 
 
 
-        <div className="grid grid-cols-2 gap-3 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
 
           <div>
 

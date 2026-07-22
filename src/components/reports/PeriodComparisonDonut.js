@@ -5,7 +5,6 @@ import { CATEGORY_COLORS } from "../../constants";
 import { getPeriodData } from "../../lib/calculations";
 
 const CHART_SIZE = 160;
-const CX = CHART_SIZE / 2;
 const CY = CHART_SIZE / 2;
 const INNER_RADIUS = 50;
 const OUTER_RADIUS = 70;
@@ -88,8 +87,8 @@ const DonutChart = ({ data, total, label, period }) => {
 
   if (total === 0) {
     return (
-      <div className="text-center min-w-[160px]">
-        <div className="w-40 h-40 rounded-full bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 mx-auto flex items-center justify-center border border-border dark:border-dark-border">
+      <div className="text-center min-w-[140px] sm:min-w-[160px]">
+        <div className="w-36 h-36 sm:w-40 sm:h-40 rounded-full bg-bg-elevated-2 dark:bg-dark-bg-elevated-2 mx-auto flex items-center justify-center border border-border dark:border-dark-border">
           <div>
             <div className="text-xs text-text-tertiary dark:text-dark-text-tertiary uppercase">No data</div>
           </div>
@@ -104,8 +103,8 @@ const DonutChart = ({ data, total, label, period }) => {
   }
 
   return (
-    <div className="text-center min-w-[160px]">
-      <div className="relative w-40 h-40 mx-auto">
+    <div className="text-center min-w-[140px] sm:min-w-[160px]">
+      <div className="relative w-36 h-36 sm:w-40 sm:h-40 mx-auto">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart key={period}>
             <Pie
@@ -176,7 +175,7 @@ export function PeriodComparisonDonut({ transactions, categories }) {
   const allCategories = [...new Set([...Object.keys(currentData), ...Object.keys(previousData)])];
 
   return (
-    <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 border border-border dark:border-dark-border mb-6">
+    <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 border border-border dark:border-dark-border">
       <div className="flex justify-between items-center mb-5">
         <div className="text-text-secondary dark:text-dark-text-secondary text-sm font-medium uppercase tracking-wider">Period Comparison</div>
         <div className="flex gap-2">
@@ -196,7 +195,7 @@ export function PeriodComparisonDonut({ transactions, categories }) {
         </div>
       </div>
 
-      <div className="flex justify-around items-center gap-4 mb-5">
+      <div className="flex flex-col sm:flex-row justify-around items-center gap-4 sm:gap-8 mb-5">
         <DonutChart
           data={previousChartData}
           total={previousTotal}

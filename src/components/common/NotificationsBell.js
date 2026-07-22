@@ -9,19 +9,35 @@ function formatTime(timestamp) {
 
 export function NotificationsBell({ notifications, unreadCount, onMarkAllRead, onClear, onRemove, toast, onToastDone }) {
   const [open, setOpen] = useState(false);
+  const [show, setShow] = useState(false);
   const [toastData, setToastData] = useState(null);
   const [toastVisible, setToastVisible] = useState(false);
   const panelRef = useRef(null);
 
+  const startOpen = () => {
+    setShow(true);
+    requestAnimationFrame(() => setOpen(true));
+  };
+
+  const startClose = () => {
+    setOpen(false);
+    setTimeout(() => setShow(false), 200);
+  };
+
+  const toggle = () => {
+    if (show) startClose();
+    else startOpen();
+  };
+
   useEffect(() => {
     function handleClickOutside(e) {
-      if (panelRef.current && !panelRef.current.contains(e.target)) {
-        setOpen(false);
+      if (panelRef.current && !panelRef.current.contains(e.target) && open) {
+        startClose();
       }
     }
-    if (open) document.addEventListener("mousedown", handleClickOutside);
+    if (show) document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [open]);
+  }, [show, open]);
 
   useEffect(() => {
     if (toast) {
@@ -33,8 +49,8 @@ export function NotificationsBell({ notifications, unreadCount, onMarkAllRead, o
   }, [toast]);
 
   const handleOpen = () => {
-    setOpen(prev => !prev);
-    if (unreadCount > 0 && !open) onMarkAllRead();
+    toggle();
+    if (unreadCount > 0 && !show) onMarkAllRead();
   };
 
   return (
@@ -60,8 +76,12 @@ export function NotificationsBell({ notifications, unreadCount, onMarkAllRead, o
         {toastData && <Toast msg={toastData.msg} type={toastData.type} onDone={onToastDone} />}
       </div>
 
-      {open && (
-        <div className="absolute top-full right-0 mt-2 w-80 bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg border border-border dark:border-dark-border shadow-lg z-50 overflow-hidden">
+      {show && (
+        <div
+          className={`fixed inset-x-4 top-16 sm:absolute sm:top-full sm:right-0 sm:left-auto sm:inset-x-auto sm:mt-2 w-[calc(100vw-2rem)] sm:w-80 bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg border border-border dark:border-dark-border shadow-lg z-50 overflow-hidden origin-top-right transition-all duration-200 ease-out ${
+            open ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-2 pointer-events-none"
+          }`}
+        >
           <div className="flex items-center justify-between px-4 py-3 border-b border-border dark:border-dark-border">
             <div className="text-sm font-medium text-text-primary dark:text-dark-text-primary">Notifications</div>
             <div className="flex items-center gap-1">
@@ -75,7 +95,7 @@ export function NotificationsBell({ notifications, unreadCount, onMarkAllRead, o
                 </button>
               )}
               <button
-                onClick={() => setOpen(false)}
+                onClick={startClose}
                 aria-label="Close notifications"
                 className="p-1.5 rounded text-text-tertiary dark:text-dark-text-tertiary hover:text-text-primary dark:hover:text-dark-text-primary hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors"
               >

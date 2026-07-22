@@ -7,10 +7,12 @@ const reportError = (source, error, context = {}) => {
     ...context,
   };
 
-  console.error(`[${entry.source}] ${entry.message}`, {
-    ...entry,
-    ...(error ? { error } : {}),
-  });
+  if (process.env.NODE_ENV !== 'production') {
+    console.error(`[${entry.source}] ${entry.message}`, {
+      ...entry,
+      ...(error ? { error } : {}),
+    });
+  }
 
 };
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
-import { LogOut, LayoutDashboard, ArrowUpDown, Wallet, Target, BarChart3, Settings as SettingsIcon, Sun, Moon } from "lucide-react";
+import { LogOut, LayoutDashboard, ArrowUpDown, Wallet, Target, BarChart3, Settings as SettingsIcon, Sun, Moon, MessageCircle, User } from "lucide-react";
 
 import { DEFAULT_CATEGORIES } from "./constants";
 
@@ -36,6 +36,8 @@ import { AIChatbot } from "./components/AIChatbot";
 
 import { NotificationsBell } from "./components/common/NotificationsBell";
 
+import { BottomNav } from "./components/common/BottomNav";
+
 import { supabase } from "./services/supabase";
 
 
@@ -47,6 +49,8 @@ export default function App() {
   const [page, setPage] = useState("dashboard");
 
   const [toast, setToast] = useState(null);
+
+const [aiChatOpen, setAiChatOpen] = useState(false);
 
 
 
@@ -136,9 +140,11 @@ export default function App() {
 
     <div className="flex h-screen overflow-hidden bg-bg dark:bg-dark-bg">
 
-      <aside className="w-[220px] border-r border-border dark:border-dark-border flex flex-col px-3 py-6 fixed h-full">
+      <aside className="fixed inset-y-0 left-0 w-[220px] border-r border-border dark:border-dark-border flex flex-col px-3 py-6 z-50 transition-transform duration-300 lg:translate-x-0 -translate-x-full lg:flex">
 
-        <div className="text-base font-bold text-text-primary dark:text-dark-text-primary px-3 mb-8">Ipon</div>
+        <div className="flex items-center justify-between mb-8 px-3">
+          <div className="text-base font-bold text-text-primary dark:text-dark-text-primary">Ipon</div>
+        </div>
 
 
 
@@ -296,19 +302,26 @@ export default function App() {
 
 
 
-      <div className="flex-1 ml-[220px] flex flex-col overflow-hidden">
+      <div className="flex-1 ml-0 md:ml-[220px] flex flex-col overflow-hidden">
 
-        <div className="px-8 py-6 border-b border-border dark:border-dark-border flex-shrink-0 flex items-center justify-between z-10">
+        <div className="px-4 sm:px-8 py-6 border-b border-border dark:border-dark-border flex-shrink-0 flex items-center justify-between z-10">
 
-          <div>
-
-            <div className="text-xl font-semibold text-text-primary dark:text-dark-text-primary">{pageTitles[page]?.title}</div>
-
-            <div className="text-sm text-text-secondary dark:text-dark-text-secondary mt-0.5">{pageTitles[page]?.sub}</div>
-
+          <div className="flex items-center gap-3">
+            <div>
+              <div className="text-xl font-semibold text-text-primary dark:text-dark-text-primary">{pageTitles[page]?.title}</div>
+              <div className="text-sm text-text-secondary dark:text-dark-text-secondary mt-0.5">{pageTitles[page]?.sub}</div>
+            </div>
           </div>
 
-          <NotificationsBell
+          <div className="flex items-center gap-2">
+            <button
+              className="lg:hidden p-2 rounded text-text-secondary dark:text-dark-text-secondary hover:text-text-primary dark:hover:text-dark-text-primary transition-colors"
+              onClick={toggleTheme}
+              aria-label={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            >
+              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+            <NotificationsBell
 
             notifications={notifications}
 
@@ -325,12 +338,27 @@ export default function App() {
             onToastDone={() => setToast(null)}
 
           />
+          <button
+            className="lg:hidden p-2 rounded text-text-secondary dark:text-dark-text-secondary hover:text-text-primary dark:hover:text-dark-text-primary transition-colors"
+            onClick={() => setAiChatOpen(!aiChatOpen)}
+            aria-label="AI Chat"
+          >
+            <MessageCircle size={20} />
+          </button>
+          <button
+            className="lg:hidden p-2 rounded text-text-secondary dark:text-dark-text-secondary hover:text-text-primary dark:hover:text-dark-text-primary transition-colors"
+            onClick={() => setPage("settings")}
+            aria-label="Settings"
+          >
+            <User size={20} />
+          </button>
+          </div>
 
         </div>
 
 
 
-        <div className="p-8 flex-1 overflow-y-auto overflow-x-hidden animate-[fadeIn_0.3s_ease-out]" key={page}>
+        <div className="p-4 sm:p-8 pb-20 lg:pb-8 flex-1 overflow-y-auto overflow-x-hidden animate-[fadeIn_0.3s_ease-out]" key={page}>
 
           <ErrorBoundary key={page}>
 
@@ -348,7 +376,7 @@ export default function App() {
 
                 {page === "reports" && <Reports transactions={transactions} categories={categories} />}
 
-                {page === "settings" && <Settings session={session} userProfile={userProfile} showToast={showToast} />}
+                {page === "settings" && <Settings session={session} userProfile={userProfile} showToast={showToast} signOut={signOut} signingOut={signingOut} />}
 
               </>
 
@@ -362,8 +390,13 @@ export default function App() {
 
 
 
-      <AIChatbot messages={messages} isTyping={isTyping} isStreaming={isStreaming} showSuggestions={showSuggestions} sendMessage={sendMessage} clearChat={clearChat} />
+      <AIChatbot messages={messages} isTyping={isTyping} isStreaming={isStreaming} showSuggestions={showSuggestions} sendMessage={sendMessage} clearChat={clearChat} isOpen={aiChatOpen} onToggle={() => setAiChatOpen(!aiChatOpen)} />
 
+      {/* Bottom Navigation */}
+      <BottomNav
+        currentPage={page}
+        onPageChange={setPage}
+      />
     </div>
 
   );

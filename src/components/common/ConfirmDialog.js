@@ -24,7 +24,7 @@ export function ConfirmDialog({ isOpen, title, message, onConfirm, onCancel }) {
 
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onClick={onCancel}>
 
-      <div ref={modalRef} className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 w-full max-w-md border border-border dark:border-dark-border" onClick={e => e.stopPropagation()} role="alertdialog" aria-modal="true" aria-labelledby="confirm-dialog-title">
+      <div ref={modalRef} className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 w-full max-w-full sm:max-w-md mx-4 sm:mx-0 border border-border dark:border-dark-border" onClick={e => e.stopPropagation()} role="alertdialog" aria-modal="true" aria-labelledby="confirm-dialog-title">
 
         <div id="confirm-dialog-title" className="text-text-primary dark:text-dark-text-primary font-semibold text-base mb-4">{title}</div>
 
@@ -36,9 +36,9 @@ export function ConfirmDialog({ isOpen, title, message, onConfirm, onCancel }) {
 
         <div className="flex gap-3 justify-end">
 
-          <button 
+          <button
 
-            className="px-3 py-2 rounded-md border border-border dark:border-dark-border text-text-primary dark:text-dark-text-primary text-sm font-medium hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors" 
+            className="px-3 py-2 rounded-md border border-border dark:border-dark-border text-text-primary dark:text-dark-text-primary text-sm font-medium hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors"
 
             onClick={onCancel}
 
@@ -48,9 +48,9 @@ export function ConfirmDialog({ isOpen, title, message, onConfirm, onCancel }) {
 
           </button>
 
-          <button 
+          <button
 
-            className="px-3 py-2 rounded-md border border-border dark:border-dark-border text-danger text-sm font-medium hover:bg-danger hover:text-white hover:border-danger transition-colors" 
+            className="px-3 py-2 rounded-md border border-border dark:border-dark-border text-danger text-sm font-medium hover:bg-danger hover:text-white hover:border-danger transition-colors"
 
             onClick={onConfirm}
 

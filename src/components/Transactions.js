@@ -6,6 +6,8 @@ import { ConfirmDialog } from "./common/ConfirmDialog";
 import { Pencil, X } from "lucide-react";
 import { CustomSelect } from "./common/CustomSelect";
 import { MonthPicker } from "./common/MonthPicker";
+import { FloatingActionButton } from "./common/FloatingActionButton";
+import { LongPressItem } from "./common/LongPressItem";
 
 export function Transactions({ transactions, categories, onCreate, onUpdate, onDelete }) {
   const [modal, setModal] = useState(null);
@@ -42,18 +44,18 @@ export function Transactions({ transactions, categories, onCreate, onUpdate, onD
     <div>
       <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg border border-border dark:border-dark-border p-5">
         {/* Filter bar header */}
-        <div className="flex items-center justify-between gap-3 flex-wrap pb-4 mb-4 border-b border-border dark:border-dark-border">
-          <div className="flex gap-2 flex-wrap">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 pb-4 mb-4 border-b border-border dark:border-dark-border">
+          <div className="grid grid-cols-3 md:flex md:flex-row gap-1.5 md:gap-2 w-full md:w-auto">
             <input
               placeholder="Search..."
               value={filter.search}
               onChange={e => setFilter(f => ({ ...f, search: e.target.value }))}
-              className="max-w-[200px] px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:outline-none focus:border-accent-primary transition-colors"
+              className="w-full md:w-[240px] px-2 md:px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-xs md:text-sm placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:outline-none focus:border-accent-primary transition-colors"
             />
             <MonthPicker
               value={filter.month}
               onChange={v => setFilter(f => ({ ...f, month: v }))}
-              className="w-40"
+              className="w-full md:w-40"
             />
             <CustomSelect
               value={filter.type}
@@ -63,15 +65,15 @@ export function Transactions({ transactions, categories, onCreate, onUpdate, onD
                 { value: "income", label: "Income" },
                 { value: "expense", label: "Expense" },
               ]}
-              className="max-w-[140px]"
+              className="w-full md:max-w-[140px]"
             />
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 w-full md:w-auto mt-3 md:mt-0">
             <span className="text-xs text-text-secondary dark:text-dark-text-secondary whitespace-nowrap tabular-nums">
               {filtered.length} {filtered.length === 1 ? "transaction" : "transactions"}
             </span>
             <button
-              className="px-3 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium transition-colors"
+              className="hidden md:block px-3 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium transition-colors"
               onClick={() => setModal("new")}
             >
               + Add
@@ -93,23 +95,24 @@ export function Transactions({ transactions, categories, onCreate, onUpdate, onD
           {visible.map(tx => {
             const cat = getCat(tx.category, categories);
             return (
-              <div
+              <LongPressItem
                 key={tx.id}
-                className="flex items-center justify-between py-3 border-b border-border dark:border-dark-border last:border-b-0 hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors cursor-pointer -mx-2 px-2 rounded group"
+                onLongPress={() => setDeleteConfirm(tx)}
                 onClick={() => setModal(tx)}
+                className={(isLongPressing) => `flex items-center justify-between py-3 border-b border-border dark:border-dark-border last:border-b-0 hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors cursor-pointer px-0 rounded group ${isLongPressing ? 'bg-bg-elevated-2 dark:bg-dark-bg-elevated-2' : ''}`}
               >
                 <div className="min-w-0 flex-1">
                   <div className="text-text-primary dark:text-dark-text-primary text-sm font-medium truncate">{tx.note || cat?.name || tx.type}</div>
                   <div className="text-text-secondary dark:text-dark-text-secondary text-xs mt-0.5">{cat?.name} · {tx.date}</div>
                 </div>
-                <div className={`text-sm font-semibold tabular-nums whitespace-nowrap mr-3 ${
+                <div className={`text-sm font-semibold tabular-nums whitespace-nowrap ml-4 mr-4 ${
                   tx.type === "income"
                     ? "text-success"
                     : "text-danger"
                 }`}>
                   {tx.type === "income" ? "+" : tx.type === "expense" ? "-" : ""}{fmt(tx.amount)}
                 </div>
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="hidden sm:flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
                     className="p-1.5 rounded text-text-tertiary dark:text-dark-text-tertiary hover:text-text-primary dark:hover:text-dark-text-primary transition-colors"
                     onClick={e => { e.stopPropagation(); setModal(tx); }}
@@ -125,7 +128,7 @@ export function Transactions({ transactions, categories, onCreate, onUpdate, onD
                     <X size={14} />
                   </button>
                 </div>
-              </div>
+              </LongPressItem>
             );
           })}
           {filtered.length > visibleCount && (
@@ -159,6 +162,7 @@ export function Transactions({ transactions, categories, onCreate, onUpdate, onD
           onCancel={() => setDeleteConfirm(null)}
         />
       )}
+      <FloatingActionButton onClick={() => setModal("new")} label="Add Transaction" ariaLabel="Add new transaction" />
     </div>
   );
 }

@@ -8,6 +8,7 @@ const months = [
 
 export function MonthPicker({ value, onChange, className = "" }) {
   const [open, setOpen] = useState(false);
+  const [dropdownAlign, setDropdownAlign] = useState('left');
   const [year, setYear] = useState(Number(value?.split("-")[0]) || new Date().getFullYear());
   const ref = useRef(null);
 
@@ -32,13 +33,19 @@ export function MonthPicker({ value, onChange, className = "" }) {
       <button
         type="button"
         className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-md border border-border dark:border-dark-border bg-transparent text-text-primary dark:text-dark-text-primary text-sm focus:outline-none focus:border-accent-primary transition-colors"
-        onClick={() => setOpen(o => !o)}
+        onClick={() => {
+          if (!open && ref.current) {
+            const rect = ref.current.getBoundingClientRect();
+            setDropdownAlign(rect.left + 256 > window.innerWidth - 8 ? 'right' : 'left');
+          }
+          setOpen(o => !o);
+        }}
       >
         <span className="truncate">{display}</span>
         <Calendar size={14} className="flex-shrink-0 text-text-tertiary dark:text-dark-text-tertiary" />
       </button>
       {open && (
-        <div className="absolute z-50 mt-1 w-64 bg-bg-elevated dark:bg-dark-bg-elevated border border-border dark:border-dark-border rounded-md p-3 overflow-hidden">
+        <div className={`absolute z-50 mt-1 w-64 max-w-[calc(100vw-1rem)] bg-bg-elevated dark:bg-dark-bg-elevated border border-border dark:border-dark-border rounded-md p-3 overflow-hidden ${dropdownAlign === 'right' ? 'right-0' : 'left-0'}`}>
           <div className="flex items-center justify-between mb-3">
             <button
               type="button"

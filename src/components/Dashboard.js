@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { thisMonth } from "../lib/formatters";
 import { CategoryBreakdown } from "./reports/CategoryBreakdown";
-import { ClockWidget } from "./dashboard/ClockWidget";
 import { SummaryCards } from "./dashboard/SummaryCards";
 import { RecentTransactions } from "./dashboard/RecentTransactions";
 import { TxModal } from "./TxModal";
@@ -22,10 +21,9 @@ export function Dashboard({ transactions, categories, onUpdate, onDelete }) {
 
   return (
     <div>
-      <ClockWidget />
       <SummaryCards income={income} expense={expense} balance={balance} transactionCount={monthTx.length} />
 
-      <div className="grid grid-cols-2 gap-6 mt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
         <RecentTransactions transactions={transactions} categories={categories} onEdit={setEditTx} onDelete={setDeleteTx} />
 
         <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 border border-border dark:border-dark-border">

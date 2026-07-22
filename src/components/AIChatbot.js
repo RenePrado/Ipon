@@ -28,8 +28,8 @@ function PisoAvatar({ size = "w-7 h-7" }) {
   );
 }
 
-export function AIChatbot({ messages, isTyping, isStreaming, showSuggestions, sendMessage, clearChat }) {
-  const [isOpen, setIsOpen] = useState(false);
+export function AIChatbot({ messages, isTyping, isStreaming, showSuggestions, sendMessage, clearChat, isOpen, onToggle }) {
+  const setIsOpen = onToggle;
   const [isClosing, setIsClosing] = useState(false);
   const [input, setInput] = useState("");
   const [hasWelcomed, setHasWelcomed] = useState(false);
@@ -47,6 +47,16 @@ export function AIChatbot({ messages, isTyping, isStreaming, showSuggestions, se
     }
   }, [messages, isTyping]);
 
+  useEffect(() => {
+    const isMobile = window.innerWidth < 640;
+    if (isOpen && isMobile) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [isOpen]);
+
   const handleSend = () => {
     if (!input.trim() || isTyping) return;
     sendMessage(input);
@@ -63,10 +73,10 @@ export function AIChatbot({ messages, isTyping, isStreaming, showSuggestions, se
   const handleClose = useCallback(() => {
     setIsClosing(true);
     setTimeout(() => {
-      setIsOpen(false);
       setIsClosing(false);
+      onToggle();
     }, 200);
-  }, []);
+  }, [onToggle]);
 
   const toggleOpen = () => {
     if (isOpen) {
@@ -98,8 +108,8 @@ export function AIChatbot({ messages, isTyping, isStreaming, showSuggestions, se
 
       {/* Chat Panel */}
       {isOpen && (
-        <div className={`fixed bottom-6 right-6 z-50 w-[360px] max-w-[calc(100vw-3rem)] origin-bottom-right ${isClosing ? "animate-[modalContentOut_0.2s_ease-in]" : "animate-[modalContentIn_0.2s_ease-out]"}`}>
-          <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg border border-border dark:border-dark-border flex flex-col h-[480px] max-h-[calc(100vh-6rem)]">
+        <div className={`fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 z-[60] sm:z-50 w-full sm:w-[360px] sm:max-w-[calc(100vw-3rem)] origin-bottom-right ${isClosing ? "animate-[modalContentOut_0.2s_ease-in]" : "animate-[modalContentIn_0.2s_ease-out]"}`}>
+          <div className="bg-bg-elevated dark:bg-dark-bg-elevated sm:rounded-lg border border-border dark:border-dark-border flex flex-col h-dvh sm:h-[480px]">
             {/* Header */}
             <div className="flex items-center justify-between p-3 border-b border-border dark:border-dark-border">
               <div className="flex items-center gap-2">

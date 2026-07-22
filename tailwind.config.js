@@ -24,7 +24,6 @@ module.exports = {
         },
         accent: {
           primary: '#6366F1',
-          secondary: '#6366F1',
         },
         success: '#22C55E',
         warning: '#F59E0B',
@@ -46,7 +45,6 @@ module.exports = {
           },
           accent: {
             primary: '#6366F1',
-            secondary: '#6366F1',
           },
           success: '#22C55E',
           warning: '#F59E0B',
@@ -68,10 +66,6 @@ module.exports = {
           '0%': { opacity: '0', transform: 'translateY(10px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
-        blinkCursor: {
-          '0%, 100%': { opacity: '1' },
-          '50%': { opacity: '0' },
-        },
         bounceOnce: {
           '0%': { transform: 'translateY(0)' },
           '30%': { transform: 'translateY(-12px)' },
@@ -82,7 +76,6 @@ module.exports = {
       },
       animation: {
         messageSlideIn: 'messageSlideIn 0.25s ease-out',
-        blinkCursor: 'blinkCursor 0.5s infinite',
         bounceOnce: 'bounceOnce 0.8s ease-out 1',
       },
     },

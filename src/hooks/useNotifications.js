@@ -57,26 +57,6 @@ export function useNotifications(session) {
     return () => supabase.removeChannel(channel);
   }, [session]);
 
-  const addNotification = useCallback(async (msg, type = "success") => {
-    if (!session || !supabase) return;
-    const title = type === "error" ? "Error" : "Update";
-    const { data, error } = await supabase
-      .from("notifications")
-      .insert({
-        user_id: session.user.id,
-        title,
-        body: msg,
-        type: type === "error" ? "danger" : type,
-        source: "user",
-      })
-      .select()
-      .single();
-
-    if (!error && data) {
-      ownIdsRef.current.add(data.id);
-    }
-  }, [session]);
-
   const markAllRead = useCallback(async () => {
     if (!session || !supabase || unreadCount === 0) return;
     await supabase
@@ -108,7 +88,6 @@ export function useNotifications(session) {
   return {
     notifications,
     unreadCount,
-    addNotification,
     markAllRead,
     clearNotifications,
     removeNotification,
