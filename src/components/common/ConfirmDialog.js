@@ -1,72 +1,34 @@
 import { useRef } from "react";
-
 import { useEscapeKey } from "../../hooks/useEscapeKey";
-
 import { useFocusTrap } from "../../hooks/useFocusTrap";
 
-
-
 export function ConfirmDialog({ isOpen, title, message, onConfirm, onCancel }) {
-
   const modalRef = useRef(null);
-
   useEscapeKey(onCancel);
-
   useFocusTrap(modalRef, isOpen);
-
-
-
   if (!isOpen) return null;
-
-
-
   return (
-
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onClick={onCancel}>
-
       <div ref={modalRef} className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 w-full max-w-full sm:max-w-md mx-4 sm:mx-0 border border-border dark:border-dark-border" onClick={e => e.stopPropagation()} role="alertdialog" aria-modal="true" aria-labelledby="confirm-dialog-title">
-
         <div id="confirm-dialog-title" className="text-text-primary dark:text-dark-text-primary font-semibold text-base mb-4">{title}</div>
-
         <div className="text-sm text-text-secondary dark:text-dark-text-secondary mb-5 leading-relaxed">
-
           {message}
-
         </div>
-
         <div className="flex gap-3 justify-end">
-
           <button
-
             className="px-3 py-2 rounded-md border border-border dark:border-dark-border text-text-primary dark:text-dark-text-primary text-sm font-medium hover:bg-bg-elevated-2 dark:hover:bg-dark-bg-elevated-2 transition-colors"
-
             onClick={onCancel}
-
           >
-
             Cancel
-
           </button>
-
           <button
-
             className="px-3 py-2 rounded-md border border-border dark:border-dark-border text-danger text-sm font-medium hover:bg-danger hover:text-white hover:border-danger transition-colors"
-
             onClick={onConfirm}
-
           >
-
             Confirm
-
           </button>
-
         </div>
-
       </div>
-
     </div>
-
   );
-
 }
-
