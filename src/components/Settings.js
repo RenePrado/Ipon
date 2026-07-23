@@ -38,7 +38,8 @@ export function Settings({ session, userProfile, showToast, signOut, signingOut 
     setLoading(false);
   };
 
-  const changePassword = async () => {
+  const changePassword = async (e) => {
+    e.preventDefault();
     const newErrors = {};
     if (!form.newPassword) {
       newErrors.newPassword = "New password is required";
@@ -135,7 +136,7 @@ export function Settings({ session, userProfile, showToast, signOut, signingOut 
       </div>
 
       {/* Change Password */}
-      <div className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 border border-border dark:border-dark-border h-full flex flex-col">
+      <form onSubmit={changePassword} className="bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 border border-border dark:border-dark-border h-full flex flex-col">
         <div className="text-text-secondary dark:text-dark-text-secondary text-sm font-medium uppercase tracking-wider mb-5">Change Password</div>
 
         <div className="mb-5">
@@ -186,14 +187,14 @@ export function Settings({ session, userProfile, showToast, signOut, signingOut 
 
         <div className="mt-auto">
           <button
+            type="submit"
             className="w-full px-3 py-2 rounded-md bg-accent-primary hover:bg-accent-primary/90 text-white text-sm font-medium transition-colors disabled:opacity-50"
-            onClick={changePassword}
             disabled={loading}
           >
             {loading ? "Updating..." : "Update Password"}
           </button>
         </div>
-      </div>
+      </form>
 
       {/* Sign Out - Mobile only */}
       <div className="lg:hidden bg-bg-elevated dark:bg-dark-bg-elevated rounded-lg p-5 border border-border dark:border-dark-border h-full flex flex-col">
